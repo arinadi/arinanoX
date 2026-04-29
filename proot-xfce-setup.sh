@@ -193,13 +193,23 @@ fi
 echo ">>> Proot sessions stopped, temp and cache cleaned."
 KILLPROOTEOF
 
-chmod +x ~/.shortcuts/start-x11.sh ~/.shortcuts/start-xfce.sh ~/.shortcuts/kill-x11.sh ~/.shortcuts/kill-proot.sh
+# --- Launcher 5: Auto-Updater ---
+cat > ~/.shortcuts/update-droiddesk.sh << 'UPDATEEOF'
+#!/data/data/com.termux/files/usr/bin/bash
+echo ">>> Downloading latest DroidDesk script..."
+curl -sL https://raw.githubusercontent.com/arinadi/DroidDesk/main/proot-xfce-setup.sh -o ~/proot-xfce-setup.sh
+echo ">>> Running update..."
+bash ~/proot-xfce-setup.sh
+UPDATEEOF
+
+chmod +x ~/.shortcuts/start-x11.sh ~/.shortcuts/start-xfce.sh ~/.shortcuts/kill-x11.sh ~/.shortcuts/kill-proot.sh ~/.shortcuts/update-droiddesk.sh
 
 # Create symlinks in home directory for terminal usage
 ln -sf ~/.shortcuts/start-x11.sh ~/start-x11.sh
 ln -sf ~/.shortcuts/start-xfce.sh ~/start-xfce.sh
 ln -sf ~/.shortcuts/kill-x11.sh ~/kill-x11.sh
 ln -sf ~/.shortcuts/kill-proot.sh ~/kill-proot.sh
+ln -sf ~/.shortcuts/update-droiddesk.sh ~/update-droiddesk.sh
 
 echo ""
 echo "=========================================="
@@ -210,9 +220,10 @@ echo "   1. bash ~/start-x11.sh"
 echo "   2. Open Termux:X11 app"
 echo "   3. bash ~/start-xfce.sh  (in new tab)"
 echo ""
-echo " Stop:"
-echo "   bash ~/kill-proot.sh   (stop XFCE/proot)"
-echo "   bash ~/kill-x11.sh     (stop X11/audio)"
+echo " Stop/Update:"
+echo "   bash ~/kill-proot.sh       (stop XFCE/proot)"
+echo "   bash ~/kill-x11.sh         (stop X11/audio)"
+echo "   bash ~/update-droiddesk.sh (update scripts)"
 echo ""
 echo " User: ${PROOT_USER} / Pass: ${PROOT_PASS}"
 echo "=========================================="

@@ -34,11 +34,12 @@ While you can install XFCE natively in Termux, running the **entire desktop insi
 - Installs Termux-required packages (`x11-repo`, `termux-x11-nightly`, `proot-distro`).
 - Sets up an **Ubuntu** proot distro.
 - Installs XFCE and basic GUI tooling (thunar, settings, audio utils).
-- Generates 4 focused launcher scripts in `~/.shortcuts/` (with symlinks to `~/`):
+- Generates 5 focused launcher scripts in `~/.shortcuts/` (with symlinks to `~/`):
   - 🟢 `start-x11.sh` — Start Termux:X11 and PulseAudio (Host).
   - 🟢 `start-xfce.sh` — Start XFCE session (Proot).
   - 🔴 `kill-x11.sh` — Stop X11 and PulseAudio.
   - 🔴 `kill-proot.sh` — Stop all XFCE processes and clean temp files securely.
+  - 🔄 `update-droiddesk.sh` — Safely update these scripts from GitHub.
 
 ## 📋 Requirements
 
@@ -86,12 +87,13 @@ bash ~/kill-x11.sh
 
 If this repository receives an update, **DO NOT** delete your files or run `rm -rf *`. The setup script is designed to be safe and idempotent.
 
-To update your launcher and kill scripts without losing your Linux installation or personal files, simply re-run the Quick Install command:
+To update your launcher and kill scripts without losing your Linux installation or personal files, simply run the update script (also available in the Termux:Widget):
 
 ```bash
-curl -sL https://raw.githubusercontent.com/arinadi/DroidDesk/main/proot-xfce-setup.sh -o ~/proot-xfce-setup.sh
-bash ~/proot-xfce-setup.sh
+bash ~/update-droiddesk.sh
 ```
+
+*(Alternatively, you can manually re-run the `curl` Quick Install command from the top of this guide).*
 
 This will quickly download the newest script, skip the OS installation, update any missing packages, and overwrite your old shortcuts with the newest versions automatically.
 
