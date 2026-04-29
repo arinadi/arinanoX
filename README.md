@@ -1,36 +1,13 @@
-# DroidDesk Proot XFCE
+<div align="center">
+  <h1>📱 DroidDesk Proot XFCE</h1>
+  <p>A focused, audio-optimized setup script for running a complete XFCE desktop inside a Termux proot environment.</p>
+</div>
 
-A focused guide for `proot-xfce-setup.sh`.
+---
 
-This script installs XFCE inside a selected proot distro and creates separate start scripts for Termux:X11 and the proot session.
+## ⚡ Quick Install
 
-The original Termux-centered guide is preserved in `readme-termux.md`.
-
-## What this script does
-
-- Installs Termux-required packages: `x11-repo`, `termux-x11-nightly`, `proot`, `proot-distro`
-- Installs one of these proot distros:
-  - Ubuntu 22.04 LTS
-  - Debian 12
-  - Kali Linux
-- Installs XFCE and basic GUI tooling inside the selected distro
-- Creates the following launcher scripts:
-  - `~/start-x11.sh` — start Termux:X11 and PulseAudio
-  - `~/start-xfce.sh` — start XFCE session inside the proot distro
-  - `~/kill-proot.sh` — kill all XFCE/proot processes and clean temp files
-  - `~/kill-x11.sh` — kill X11 and PulseAudio, clean sockets
-
-## Requirements
-
-- Android phone (ARM64)
-- Termux installed from F-Droid
-- Termux:X11 Android app installed from the nightly release
-
-## Install
-
-You can install the script directly from this repository or run it from a local clone.
-
-### Option 1: Download and run directly from GitHub
+Download and run the setup script directly from GitHub in Termux:
 
 ```bash
 curl -sL https://raw.githubusercontent.com/arinadi/DroidDesk/main/proot-xfce-setup.sh -o ~/proot-xfce-setup.sh
@@ -38,71 +15,71 @@ chmod +x ~/proot-xfce-setup.sh
 bash ~/proot-xfce-setup.sh
 ```
 
-### Option 2: Run from a local repository clone
+> [!NOTE]
+> This script installs XFCE inside an Ubuntu proot and creates separate start scripts for Termux:X11 and the proot session.
 
-```bash
-cd /workspaces/DroidDesk
-bash proot-xfce-setup.sh
-```
+## 🧐 Why Proot? (Termux vs Ubuntu)
 
-Choose the distro when prompted.
+While you can install XFCE natively in Termux, running the **entire desktop inside a proot Ubuntu environment** offers a much smoother "daily-driver" experience:
 
-## Usage
+- 📦 **Standard `glibc` binaries:** Termux uses `bionic` (Android's libc), which breaks many standard Linux apps. Ubuntu proot uses standard `glibc`, ensuring maximum compatibility.
+- 🔗 **Seamless App Integration:** While you *could* run native Termux XFCE and sync proot apps to the menu, setting them as default apps is extremely difficult because the binaries aren't natively in the Termux directory. By putting the *entire* XFCE desktop inside Ubuntu, setting apps like `firefox-esr` as your default browser "Just Works".
+- 🛡️ **Better App Stability:** Apps run exactly as they would on a standard desktop without complex cross-environment workarounds. For example, Firefox ESR handles complex JavaScript and Google logins perfectly inside proot.
+- 📚 **Standard Repositories:** You get access to the full `apt` repository of Ubuntu/Debian instead of just the limited Termux packages.
 
-### 1. Start the X11 server
+## 🛠️ What this script does
 
+- Installs Termux-required packages (`x11-repo`, `termux-x11-nightly`, `proot-distro`).
+- Sets up an **Ubuntu** proot distro.
+- Installs XFCE and basic GUI tooling (thunar, settings, audio utils).
+- Generates 4 focused launcher scripts in `~/.shortcuts/` (with symlinks to `~/`):
+  - 🟢 `start-x11.sh` — Start Termux:X11 and PulseAudio (Host).
+  - 🟢 `start-xfce.sh` — Start XFCE session (Proot).
+  - 🔴 `kill-x11.sh` — Stop X11 and PulseAudio.
+  - 🔴 `kill-proot.sh` — Stop all XFCE processes and clean temp files securely.
+
+## 📋 Requirements
+
+- Android phone (ARM64)
+- **Termux** (installed from F-Droid, NOT Play Store)
+- **Termux:X11** Android app (Nightly release)
+- **Termux:Widget** (Optional, but highly recommended for 1-tap launchers)
+
+## 🚀 Usage
+
+### 📱 Termux:Widget Support
+If you have the **Termux:Widget** app installed, the setup script automatically makes launchers available on your homescreen! You can start or stop sessions with a single tap without ever opening the terminal.
+
+For terminal usage, simply run the symlinks in your home directory:
+
+### 1. Start the Server & Audio
 ```bash
 bash ~/start-x11.sh
 ```
+*(Starts Termux:X11 on display `:0` and starts the PulseAudio server)*
 
-This starts Termux:X11 on display `:1`.
-
-### 2. Start XFCE inside the proot distro
-
+### 2. Start the Desktop
 ```bash
 bash ~/start-xfce.sh
 ```
+*(Launches the XFCE session inside the proot container)*
 
-This launches the XFCE session in the selected proot container using `DISPLAY=:0`.
-
-### 3. Stop XFCE / proot
-
+### 3. Stop Everything
 ```bash
 bash ~/kill-proot.sh
-```
-
-Kills all XFCE and proot processes, cleans temp files inside rootfs (preserves config).
-
-### 4. Stop X11 / audio
-
-```bash
 bash ~/kill-x11.sh
 ```
+*(Securely kills all desktop processes and cleans socket files without deleting your personal configs)*
 
-Kills Termux:X11 and PulseAudio, removes socket and lock files.
+> [!TIP]
+> **Recommended Workflow:** Always run the `kill` scripts before starting a new session to ensure a clean slate and avoid "X server already running" or missing cursor errors!
 
-## Recommended flow
+## ⚠️ Notes
 
-**Start:**
-1. `bash ~/start-x11.sh`
-2. Open Termux:X11 app
-3. `bash ~/start-xfce.sh` (in new Termux tab)
+- `start-xfce.sh` **must** be run only after `start-x11.sh` is already running.
+- The container session runs natively via `dbus-run-session startxfce4`.
+- If the display is unstable or tearing, try adding Termux:X11 flags such as `-legacy-drawing` or `-force-bgra` to the `start-x11.sh` script.
 
-**Stop:**
-1. `bash ~/kill-proot.sh`
-2. `bash ~/kill-x11.sh`
-
-## Notes
-
-- `~/start-xfce.sh` requires `~/start-x11.sh` to be running first.
-- Start scripts only start — they do not kill previous sessions. Run the kill scripts first if you need a clean restart.
-- The container session uses `dbus-run-session startxfce4`.
-- If the display is unstable, you may later add Termux:X11 flags such as `-legacy-drawing` or `-force-bgra`.
-
-## Original Termux guide
-
-See `readme-termux.md` for the full original Termux/XFCE documentation.
-
-## License
+## 📜 License
 
 Released under the GPLv3 license.

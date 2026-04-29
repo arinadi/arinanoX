@@ -50,7 +50,8 @@ proot-distro login "$DISTRO" -- bash -c "
         sudo dbus-x11 \
         xfce4-session xfwm4 xfce4-panel xfce4-terminal \
         xfce4-settings xfconf thunar xfdesktop4 \
-        fonts-noto pulseaudio-utils libgl1 mesa-utils
+        fonts-noto pulseaudio-utils libgl1 mesa-utils \
+        firefox-esr
 
     # --- User Setup ---
     id ${PROOT_USER} &>/dev/null || useradd -m -s /bin/bash ${PROOT_USER}
@@ -83,11 +84,13 @@ echo "  [+] Ubuntu setup complete."
 # =============================================
 #  Step 3/3: Generating Launchers
 # =============================================
-echo ">>> 3/3: Generating Optimized Launchers..."
+echo ">>> 3/3: Generating Launchers & Shortcuts..."
+
+mkdir -p ~/.shortcuts
 
 # --- Launcher 1: X11 & Audio Server (Termux Side) ---
 # Single-quoted heredoc ('EOF') — nothing is expanded at generation time.
-cat > ~/start-x11.sh << 'EOF'
+cat > ~/.shortcuts/start-x11.sh << 'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 TERMUX_TMP="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
 PULSE_SOCK="${TERMUX_TMP}/pulse-socket"
@@ -103,15 +106,19 @@ echo ">>> Starting Termux-X11..."
 termux-x11 :0 -ac &
 sleep 2
 
+# Auto-open the Termux:X11 Android App
+echo ">>> Switching to Termux:X11 App..."
+am start -n com.termux.x11/com.termux.x11.MainActivity 2>/dev/null || true
+
 echo ""
 echo ">>> X11/High-Fidelity Audio Ready."
-echo ">>> Open Termux:X11 app, then run: bash ~/start-xfce.sh"
+echo ">>> Run: bash ~/start-xfce.sh (or tap the widget!)"
 EOF
 
 # --- Launcher 2: XFCE Desktop (Proot Side) ---
 # Double-quoted heredoc — $DISTRO and $PROOT_USER are baked in at generation.
 # Runtime variables use \$ to defer expansion.
-cat > ~/start-xfce.sh << XFCEOF
+cat > ~/.shortcuts/start-xfce.sh << XFCEOF
 #!/data/data/com.termux/files/usr/bin/bash
 TERMUX_TMP="\${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
 X11_SOCK="\${TERMUX_TMP}/.X11-unix"
@@ -140,7 +147,7 @@ proot-distro login ${DISTRO} \$BINDS -- su - ${PROOT_USER} -c "
 XFCEOF
 
 # --- Kill Script 1: Kill X11 & Audio (Termux Side) ---
-cat > ~/kill-x11.sh << 'KILLX11EOF'
+cat > ~/.shortcuts/kill-x11.sh << 'KILLX11EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 echo ">>> Stopping X11 and PulseAudio..."
 pkill -9 -f "termux-x11" 2>/dev/null || true
@@ -156,7 +163,7 @@ KILLX11EOF
 
 # --- Kill Script 2: Kill Proot/XFCE (Termux Side) ---
 # Double-quoted heredoc — $DISTRO is baked in at generation.
-cat > ~/kill-proot.sh << KILLPROOTEOF
+cat > ~/.shortcuts/kill-proot.sh << KILLPROOTEOF
 #!/data/data/com.termux/files/usr/bin/bash
 echo ">>> Stopping XFCE and proot sessions..."
 
@@ -186,11 +193,17 @@ fi
 echo ">>> Proot sessions stopped, temp and cache cleaned."
 KILLPROOTEOF
 
-chmod +x ~/start-x11.sh ~/start-xfce.sh ~/kill-x11.sh ~/kill-proot.sh
+chmod +x ~/.shortcuts/start-x11.sh ~/.shortcuts/start-xfce.sh ~/.shortcuts/kill-x11.sh ~/.shortcuts/kill-proot.sh
+
+# Create symlinks in home directory for terminal usage
+ln -sf ~/.shortcuts/start-x11.sh ~/start-x11.sh
+ln -sf ~/.shortcuts/start-xfce.sh ~/start-xfce.sh
+ln -sf ~/.shortcuts/kill-x11.sh ~/kill-x11.sh
+ln -sf ~/.shortcuts/kill-proot.sh ~/kill-proot.sh
 
 echo ""
 echo "=========================================="
-echo " SETUP COMPLETE (Audio Optimized, v7.0)"
+echo " SETUP COMPLETE (Widget Support, v8.0)"
 echo ""
 echo " Start:"
 echo "   1. bash ~/start-x11.sh"
