@@ -80,6 +80,29 @@ bash ~/kill-x11.sh
 - The container session runs natively via `dbus-run-session startxfce4`.
 - If the display is unstable or tearing, try adding Termux:X11 flags such as `-legacy-drawing` or `-force-bgra` to the `start-x11.sh` script.
 
+## 🔄 How to Safely Update Scripts
+
+If this repository receives an update, **DO NOT** delete your files or run `rm -rf *`. The setup script is designed to be safe and idempotent.
+
+To update your launcher and kill scripts without losing your Linux installation or personal files, simply re-run the Quick Install command:
+
+```bash
+curl -sL https://raw.githubusercontent.com/arinadi/DroidDesk/main/proot-xfce-setup.sh -o ~/proot-xfce-setup.sh
+bash ~/proot-xfce-setup.sh
+```
+
+This will quickly download the newest script, skip the OS installation, update any missing packages, and overwrite your old shortcuts with the newest versions automatically.
+
+## 🧹 Cleanup Tips (Nuclear Option)
+
+If your environment breaks entirely or you want to free up space and start completely fresh:
+1. Go to your **Android Settings** > **Apps** > **Termux**.
+2. Tap **Storage** > **Clear Data** (and Clear Cache).
+3. Open Termux again and re-run the Quick Install script. 
+
+> [!CAUTION]
+> This will permanently wipe your proot distro and all Linux files/configurations inside Termux, giving you a 100% clean slate.
+
 ## 📜 License
 
 Released under the GPLv3 license.
