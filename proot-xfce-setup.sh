@@ -65,10 +65,10 @@ export XDG_RUNTIME_DIR=/tmp
 alias update='sudo apt-get update && sudo apt-get upgrade -y'
 BASHEOF
 
-    # --- PulseAudio Client Config (Unix Socket) ---
+    # --- PulseAudio Client Config (TCP) ---
     mkdir -p /home/${PROOT_USER}/.pulse
     cat > /home/${PROOT_USER}/.pulse/client.conf << 'PULSEEOF'
-default-server = unix:/tmp/pulse-socket
+default-server = 127.0.0.1
 autospawn = no
 daemon-binary = /bin/true
 PULSEEOF
@@ -95,10 +95,15 @@ TERMUX_TMP="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
 PULSE_SOCK="${TERMUX_TMP}/pulse-socket"
 
 
-# Start PulseAudio with Unix Socket for high fidelity and low latency
+# Start PulseAudio
 echo ">>> Starting PulseAudio..."
-pulseaudio --start --exit-idle-time=-1 \
-    --load="module-native-protocol-unix socket=${PULSE_SOCK}"
+pulseaudio --start --exit-idle-time=-1
+
+# Load Audio Sinks (Try AAudio then SLES)
+pactl load-module module-aaudio-sink 2>/dev/null || pactl load-module module-sles-sink 2>/dev/null
+
+# Load TCP Protocol for Proot Access
+pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 2>/dev/null
 
 # Start X11
 echo ">>> Starting Termux-X11..."
@@ -110,7 +115,7 @@ echo ">>> Switching to Termux:X11 App..."
 am start -n com.termux.x11/com.termux.x11.MainActivity 2>/dev/null || true
 
 echo ""
-echo ">>> X11/High-Fidelity Audio Ready."
+echo ">>> X11/TCP Audio Ready."
 echo ">>> Run: bash ~/start-xfce.sh (or tap the widget!)"
 EOF
 
@@ -134,6 +139,9 @@ proot-distro login ${DISTRO} \$BINDS -- su - ${PROOT_USER} -c "
     # Export display and accessibility (suppress warnings)
     export DISPLAY=:0
     export NO_AT_BRIDGE=1
+
+    # Set Audio to Host TCP
+    export PULSE_SERVER=127.0.0.1
 
     # Fix XDG_RUNTIME_DIR permission issue
     export XDG_RUNTIME_DIR=/tmp/xdg-${PROOT_USER}

@@ -600,6 +600,7 @@ sleep 0.5
 echo "[*] Starting audio..."
 pulseaudio --start --exit-idle-time=-1
 sleep 1
+pactl load-module module-aaudio-sink 2>/dev/null || pactl load-module module-sles-sink 2>/dev/null
 pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 2>/dev/null
 export PULSE_SERVER=127.0.0.1
 
@@ -982,6 +983,7 @@ pulseaudio --kill 2>/dev/null
 sleep 0.5
 pulseaudio --start --exit-idle-time=-1
 sleep 1
+pactl load-module module-aaudio-sink 2>/dev/null || pactl load-module module-sles-sink 2>/dev/null
 pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 2>/dev/null
 export PULSE_SERVER=127.0.0.1
 
