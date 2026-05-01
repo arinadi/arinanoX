@@ -380,11 +380,11 @@ PROOTEOF
     chmod +x ~/start-proot.sh
     echo -e "  [+] Created ~/start-proot.sh"
 
-    # ---- proot-menu-sync.sh (v3 — embedded) ----
+    # ---- proot-menu-sync.sh (embedded) ----
     cat > ~/proot-menu-sync.sh << 'SYNCEOF'
 #!/data/data/com.termux/files/usr/bin/bash
 # ============================================================
-#  Proot App Menu Bridge v3
+#  Proot App Menu Bridge
 #  Syncs proot .desktop files into native XFCE menu.
 #  Fixes: $TMPDIR log path, runtime X11 bind, dbus-run-session,
 #         Blender libvulkan auto-detect, LibreOffice --norestore

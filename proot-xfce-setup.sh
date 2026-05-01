@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# proot-xfce-setup.sh v8.0 (Audio Focused, No GPU)
+# proot-xfce-setup.sh (Audio Focused, No GPU)
 # Fixed: variable expansion, dialog, apt-get, --no-install-recommends,
 #        launcher escaping, error handling
 set -euo pipefail
@@ -277,7 +277,7 @@ ln -sf ~/.shortcuts/update-droiddesk.sh ~/update-droiddesk.sh
 cat > /data/data/com.termux/files/usr/etc/motd << MOTDEOF
 
 ==========================================
- 📱 DroidDesk Proot XFCE (v8.0)
+ 📱 DroidDesk Proot XFCE
 ==========================================
 
  Start:
@@ -297,7 +297,7 @@ MOTDEOF
 
 echo ""
 echo "=========================================="
-echo " SETUP COMPLETE (Widget Support, v8.0)"
+echo " SETUP COMPLETE (Widget Support)"
 echo ""
 echo " Start:"
 echo "   1. bash ~/start-x11.sh"
