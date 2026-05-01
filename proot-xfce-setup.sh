@@ -150,11 +150,25 @@ XFCEOF
 cat > ~/.shortcuts/kill-x11.sh << 'KILLX11EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 echo ">>> Stopping X11 and PulseAudio..."
-pkill -9 -f "termux-x11" 2>/dev/null || true
-pkill -9 -f "pulseaudio" 2>/dev/null || true
 
+# Kill X11 server
+if pkill -f "termux-x11" 2>/dev/null; then
+    echo "  [x] termux-x11 killed"
+else
+    echo "  [-] termux-x11 not running"
+fi
+
+# Kill PulseAudio
+if pkill "pulseaudio" 2>/dev/null; then
+    echo "  [x] pulseaudio killed"
+    sleep 1
+else
+    echo "  [-] pulseaudio not running"
+fi
+
+# Cleanup stale files (Termux tmp, not /tmp)
 TERMUX_TMP="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
-rm -f /tmp/.X0-lock 2>/dev/null
+rm -f "${TERMUX_TMP}/.X0-lock" 2>/dev/null
 rm -rf "${TERMUX_TMP}/.X11-unix" 2>/dev/null
 rm -f "${TERMUX_TMP}/pulse-socket" 2>/dev/null
 
@@ -162,20 +176,36 @@ echo ">>> X11 and PulseAudio stopped."
 KILLX11EOF
 
 # --- Kill Script 2: Kill Proot/XFCE (Termux Side) ---
-# Double-quoted heredoc — $DISTRO is baked in at generation.
+# Double-quoted heredoc — $DISTRO and $PROOT_USER are baked in at generation.
 cat > ~/.shortcuts/kill-proot.sh << KILLPROOTEOF
 #!/data/data/com.termux/files/usr/bin/bash
 echo ">>> Stopping XFCE and proot sessions..."
 
-# Kill desktop processes (leaf first, then session managers)
-pkill -9 -f "thunar" 2>/dev/null || true
-pkill -9 -f "xfce4-panel" 2>/dev/null || true
-pkill -9 -f "xfce4-terminal" 2>/dev/null || true
-pkill -9 -f "xfwm4" 2>/dev/null || true
-pkill -9 -f "xfce4-session" 2>/dev/null || true
-pkill -9 -f "dbus-daemon" 2>/dev/null || true
-pkill -9 -f "proot-distro" 2>/dev/null || true
-pkill -9 -f "proot --" 2>/dev/null || true
+# Kill desktop processes — leaf apps first, session managers last
+XFCE_PROCS="thunar xfdesktop4 xfce4-panel xfce4-terminal xfwm4 xfce4-session"
+for proc in \$XFCE_PROCS; do
+    if pkill -f "\$proc" 2>/dev/null; then
+        echo "  [x] \$proc killed"
+    fi
+done
+
+# Kill dbus session daemon (spawned by dbus-run-session)
+pkill -f "dbus-daemon --nofork --session" 2>/dev/null && echo "  [x] dbus-daemon killed" || true
+
+# Kill proot-distro login session (specific match to avoid killing other proot jobs)
+pkill -f "proot-distro login ${DISTRO}" 2>/dev/null && echo "  [x] proot-distro killed" || true
+
+# Kill orphan proot processes tied to the distro rootfs
+pkill -f "proot.*installed-rootfs/${DISTRO}" 2>/dev/null && echo "  [x] orphan proot killed" || true
+
+# Short wait to let processes terminate cleanly
+sleep 1
+
+# Force-kill anything that survived graceful shutdown
+for proc in \$XFCE_PROCS; do
+    pkill -9 -f "\$proc" 2>/dev/null || true
+done
+pkill -9 -f "proot.*installed-rootfs/${DISTRO}" 2>/dev/null || true
 
 # Clean temp inside rootfs (preserves all config files)
 ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/${DISTRO}"
@@ -185,6 +215,7 @@ if [ -d "\$ROOTFS/tmp" ]; then
     rm -rf "\$ROOTFS/tmp/dbus-"* 2>/dev/null
     rm -rf "\$ROOTFS/tmp/ssh-"* 2>/dev/null
     rm -f "\$ROOTFS/tmp/.dbus"* 2>/dev/null
+    rm -rf "\$ROOTFS/tmp/xdg-${PROOT_USER}" 2>/dev/null
     
     # Clean corrupt XFCE sessions to ensure fresh start (does NOT delete user config)
     rm -rf "\$ROOTFS/home/${PROOT_USER}/.cache/sessions/"* 2>/dev/null
@@ -192,6 +223,18 @@ fi
 
 echo ">>> Proot sessions stopped, temp and cache cleaned."
 KILLPROOTEOF
+
+# --- Kill Script 3: Kill ALL (Convenience — runs both kill scripts) ---
+cat > ~/.shortcuts/kill-all.sh << 'KILLALLEOF'
+#!/data/data/com.termux/files/usr/bin/bash
+echo ">>> Stopping ALL DroidDesk services..."
+echo ""
+bash ~/.shortcuts/kill-proot.sh
+echo ""
+bash ~/.shortcuts/kill-x11.sh
+echo ""
+echo ">>> All DroidDesk services stopped."
+KILLALLEOF
 
 # --- Launcher 5: Auto-Updater ---
 cat > ~/.shortcuts/update-droiddesk.sh << 'UPDATEEOF'
@@ -213,13 +256,14 @@ else
 fi
 UPDATEEOF
 
-chmod +x ~/.shortcuts/start-x11.sh ~/.shortcuts/start-xfce.sh ~/.shortcuts/kill-x11.sh ~/.shortcuts/kill-proot.sh ~/.shortcuts/update-droiddesk.sh
+chmod +x ~/.shortcuts/start-x11.sh ~/.shortcuts/start-xfce.sh ~/.shortcuts/kill-x11.sh ~/.shortcuts/kill-proot.sh ~/.shortcuts/kill-all.sh ~/.shortcuts/update-droiddesk.sh
 
 # Create symlinks in home directory for terminal usage
 ln -sf ~/.shortcuts/start-x11.sh ~/start-x11.sh
 ln -sf ~/.shortcuts/start-xfce.sh ~/start-xfce.sh
 ln -sf ~/.shortcuts/kill-x11.sh ~/kill-x11.sh
 ln -sf ~/.shortcuts/kill-proot.sh ~/kill-proot.sh
+ln -sf ~/.shortcuts/kill-all.sh ~/kill-all.sh
 ln -sf ~/.shortcuts/update-droiddesk.sh ~/update-droiddesk.sh
 
 # --- Termux MOTD Update ---
@@ -235,9 +279,10 @@ cat > /data/data/com.termux/files/usr/etc/motd << MOTDEOF
    3. bash ~/start-xfce.sh  (in new tab)
 
  Stop/Update:
-   bash ~/kill-proot.sh       (stop XFCE)
-   bash ~/kill-x11.sh         (stop Audio)
-   bash ~/update-droiddesk.sh (update)
+    bash ~/kill-all.sh         (stop ALL)
+    bash ~/kill-proot.sh       (stop XFCE only)
+    bash ~/kill-x11.sh         (stop X11/Audio only)
+    bash ~/update-droiddesk.sh (update)
 
  User: ${PROOT_USER} / Pass: ${PROOT_PASS}
 ==========================================
@@ -253,8 +298,9 @@ echo "   2. Open Termux:X11 app"
 echo "   3. bash ~/start-xfce.sh  (in new tab)"
 echo ""
 echo " Stop/Update:"
-echo "   bash ~/kill-proot.sh       (stop XFCE/proot)"
-echo "   bash ~/kill-x11.sh         (stop X11/audio)"
+echo "   bash ~/kill-all.sh         (stop ALL)"
+echo "   bash ~/kill-proot.sh       (stop XFCE/proot only)"
+echo "   bash ~/kill-x11.sh         (stop X11/audio only)"
 echo "   bash ~/update-droiddesk.sh (update scripts)"
 echo ""
 echo " User: ${PROOT_USER} / Pass: ${PROOT_PASS}"
