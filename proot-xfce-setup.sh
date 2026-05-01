@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# proot-xfce-setup.sh v6.0 (Audio Focused, No GPU)
+# proot-xfce-setup.sh v8.0 (Audio Focused, No GPU)
 # Fixed: variable expansion, dialog, apt-get, --no-install-recommends,
 #        launcher escaping, error handling
 set -euo pipefail

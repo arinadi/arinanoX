@@ -34,11 +34,12 @@ While you can install XFCE natively in Termux, running the **entire desktop insi
 - Installs Termux-required packages (`x11-repo`, `termux-x11-nightly`, `proot-distro`).
 - Sets up an **Ubuntu** proot distro.
 - Installs XFCE and basic GUI tooling (thunar, settings, audio utils).
-- Generates 5 focused launcher scripts in `~/.shortcuts/` (with symlinks to `~/`):
+- Generates 6 focused launcher scripts in `~/.shortcuts/` (with symlinks to `~/`):
   - 🟢 `start-x11.sh` — Start Termux:X11 and PulseAudio (Host).
   - 🟢 `start-xfce.sh` — Start XFCE session (Proot).
-  - 🔴 `kill-x11.sh` — Stop X11 and PulseAudio.
-  - 🔴 `kill-proot.sh` — Stop all XFCE processes and clean temp files securely.
+  - 🔴 `kill-x11.sh` — Stop X11 and PulseAudio (cleans sockets).
+  - 🔴 `kill-proot.sh` — Stop all XFCE processes and clean session cache.
+  - 🔴 `kill-all.sh` — Stop everything with one command.
   - 🔄 `update-droiddesk.sh` — Safely update these scripts from GitHub.
 
 ## 🧩 The Minimalist Package Philosophy
@@ -56,7 +57,9 @@ To keep the environment lightning-fast and prevent storage bloat, this script de
 - `xfce4-session`, `xfwm4`, `xfce4-panel`: The absolute bare minimum trinity to render a working desktop (Session manager, Window manager, and Taskbar).
 - `xfdesktop4`, `thunar`, `xfce4-settings`, `xfce4-terminal`: Provides the desktop background, file manager, GUI settings app, and a terminal to actually interact with the system.
 - `libgl1`, `mesa-utils`: Provides OpenGL rendering support so the window manager doesn't crash on Android displays.
-- `firefox-esr`: Hand-picked as the most stable, reliable browser for proot environments.
+
+> [!TIP]
+> Use `bash ~/patch-tui.sh` after installation to easily install Browsers (Firefox), AI Tools, and Dev IDEs.
 
 ## 📋 Requirements
 
@@ -102,13 +105,17 @@ bash ~/start-x11.sh
 bash ~/start-xfce.sh
 ```
 *(Launches the XFCE session inside the proot container)*
-
 ### 3. Stop Everything
+```bash
+bash ~/kill-all.sh
+```
+*(Securely kills all desktop processes, audio servers, and cleans socket files)*
+
+Alternatively, you can stop them individually:
 ```bash
 bash ~/kill-proot.sh
 bash ~/kill-x11.sh
 ```
-*(Securely kills all desktop processes and cleans socket files without deleting your personal configs)*
 
 > [!TIP]
 > **Recommended Workflow:** Always run the `kill` scripts before starting a new session to ensure a clean slate and avoid "X server already running" or missing cursor errors!
