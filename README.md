@@ -77,6 +77,15 @@ To keep the environment lightning-fast and prevent storage bloat, this script de
 - **Termux:X11** Android app (Nightly release)
 - **Termux:Widget** (Optional, but highly recommended for 1-tap launchers)
 
+## 🎨 Personalization & Pre-config
+DroidDesk comes with an optimized XFCE configuration (64px panel, high DPI, black wallpaper) designed for mobile screens.
+
+To apply the pre-set theme inside your Proot environment:
+```bash
+curl -sL https://raw.githubusercontent.com/arinadi/DroidDesk/main/apply-preconfig.sh | bash
+```
+*Note: Restart your XFCE session after applying.*
+
 ## 🛑 CRITICAL: Android 12+ Background Restrictions (Signal 9 Error)
 
 If your Termux session suddenly crashes with `[Process completed (signal 9) - press Enter]`, it means Android's **Phantom Process Killer** has forcefully terminated your Linux desktop for running too many background processes. Running a full desktop environment (Window manager, panels, DBus) easily hits this limit.
