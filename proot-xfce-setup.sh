@@ -159,7 +159,7 @@ BINDS=""
 [ -e "\$PULSE_SOCK" ] && BINDS="\$BINDS --bind \$PULSE_SOCK:/tmp/pulse-socket"
 
 echo ">>> Starting XFCE Desktop..."
-proot-distro login ${DISTRO} \$BINDS -- su - ${PROOT_USER} -c "
+proot-distro login ${DISTRO} --shared-tmp \$BINDS -- su - ${PROOT_USER} -c "
 
     # Export display and accessibility (suppress warnings)
     export DISPLAY=:0
@@ -173,8 +173,11 @@ proot-distro login ${DISTRO} \$BINDS -- su - ${PROOT_USER} -c "
     mkdir -p \$XDG_RUNTIME_DIR
     chmod 700 \$XDG_RUNTIME_DIR
 
-    # Start fresh session
-    dbus-run-session startxfce4
+    # Clean old dbus session
+    rm -f /tmp/dbus-* 2>/dev/null
+
+    # Start fresh session using dbus-launch (recommended for Termux-X11/proot)
+    dbus-launch --exit-with-session startxfce4
 "
 XFCEOF
 
@@ -242,7 +245,7 @@ for proc in \$XFCE_PROCS; do
 done
 pkill -9 -f "proot.*installed-rootfs/${DISTRO}" 2>/dev/null || true
 
-# Clean temp inside rootfs (preserves all config files)
+# Clean temp and artifacts inside rootfs (preserves all config files)
 ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/${DISTRO}"
 if [ -d "\$ROOTFS/tmp" ]; then
     echo "  [*] Cleaning temp and session cache..."
@@ -252,8 +255,10 @@ if [ -d "\$ROOTFS/tmp" ]; then
     rm -f "\$ROOTFS/tmp/.dbus"* 2>/dev/null
     rm -rf "\$ROOTFS/tmp/xdg-${PROOT_USER}" 2>/dev/null
     
-    # Clean corrupt XFCE sessions to ensure fresh start (does NOT delete user config)
+    # Clean corrupt XFCE sessions and authority files
     rm -rf "\$ROOTFS/home/${PROOT_USER}/.cache/sessions/"* 2>/dev/null
+    rm -f "\$ROOTFS/home/${PROOT_USER}/.ICEauthority" 2>/dev/null
+    rm -f "\$ROOTFS/home/${PROOT_USER}/.Xauthority" 2>/dev/null
 fi
 
 echo ">>> Proot sessions stopped, temp and cache cleaned."

@@ -132,7 +132,7 @@ bash ~/kill-x11.sh
 ## ⚠️ Notes
 
 - `start-xfce.sh` **must** be run only after `start-x11.sh` is already running.
-- The container session runs natively via `dbus-run-session startxfce4`.
+- The container session runs natively via `dbus-launch --exit-with-session startxfce4`.
 - If the display is unstable or tearing, try adding Termux:X11 flags such as `-legacy-drawing` or `-force-bgra` to the `start-x11.sh` script.
 
 ## 🔄 How to Safely Update Scripts
