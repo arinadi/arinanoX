@@ -69,6 +69,7 @@ While you can install XFCE natively in Termux, running the **entire desktop insi
 To keep the environment lightning-fast and prevent storage bloat, this script avoids "kitchen-sink" meta-packages. Instead, we use a highly curated, modular list:
 
 **1. Termux Host Packages:**
+- `termux-setup-storage`: Grants Termux access to your phone's internal memory.
 - `x11-repo` & `tur-repo`: Required for high-performance X11 and Termux User Repository packages.
 - `termux-x11-nightly`: The best, highest-performance X server for Android.
 - `proot-distro`: The safest way to manage Linux containers in Termux.

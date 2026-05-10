@@ -12,6 +12,7 @@ ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/${
 
 # Install required host packages
 echo ">>> 1/3: Termux Host Setup..."
+termux-setup-storage
 pkg update -y
 pkg install -y x11-repo tur-repo
 pkg install -y termux-x11-nightly proot-distro pulseaudio xorg-xrandr netcat-openbsd
