@@ -18,6 +18,14 @@ bash ~/setup-proot-xfce.sh
 > [!NOTE]
 > This script installs XFCE inside an Ubuntu proot and creates specialized launcher scripts for Termux:X11 and PulseAudio.
 
+## 📦 Install Extra Apps (TUI)
+
+After the main installation, you can install Browsers (Firefox), AI Tools, and Development IDEs using the interactive package installer:
+
+```bash
+curl -sL https://raw.githubusercontent.com/arinadi/DroidDesk/main/install-tui-packages.sh | bash
+```
+
 ---
 
 ## 💡 The Vision: Portable Linux Power
@@ -66,9 +74,6 @@ To keep the environment lightning-fast and prevent storage bloat, this script av
 - `xfce4-session`, `xfwm4`, `xfce4-panel`: Bare minimum to render a working desktop.
 - `xfdesktop4`, `thunar`, `xfce4-settings`, `xfce4-terminal`: Desktop background, file manager, GUI settings, and terminal.
 - `libgl1`, `mesa-utils`: OpenGL rendering support.
-
-> [!TIP]
-> Use `bash ~/install-tui-packages.sh` after installation to easily install Browsers (Firefox), AI Tools, and Dev IDEs.
 
 ## 📋 Requirements
 
