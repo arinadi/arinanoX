@@ -83,6 +83,14 @@ TAPIOF
     cat > /home/${PROOT_USER}/.bashrc << 'BASHEOF'
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=/tmp
+
+# Clean PATH from Termux pollution
+export PATH=/home/${PROOT_USER}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# NVM Initialization (if exists)
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 alias update='sudo apt-get update && sudo apt-get upgrade -y'
 
 # Termux:API Aliases
@@ -176,7 +184,7 @@ BINDS=""
 [ -d "/storage/emulated/0" ] && BINDS="\$BINDS --bind /storage/emulated/0:/sdcard"
 
 echo ">>> Starting XFCE Desktop..."
-proot-distro login ${DISTRO} --shared-tmp \$BINDS -- su - ${PROOT_USER} -c "
+proot-distro login ${DISTRO} --shared-tmp \$BINDS -- su - ${PROOT_USER} -c '
 
     # Export display and accessibility (suppress warnings)
     export DISPLAY=:0
@@ -195,7 +203,7 @@ proot-distro login ${DISTRO} --shared-tmp \$BINDS -- su - ${PROOT_USER} -c "
 
     # Start fresh session using dbus-launch (recommended for Termux-X11/proot)
     dbus-launch --exit-with-session startxfce4
-"
+'
 XFCEOF
 
 # --- Kill Script 1: Kill X11 & Audio (Termux Side) ---
