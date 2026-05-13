@@ -2,6 +2,13 @@
 # 📱 DroidDesk XFCE Pre-config Applier
 # Focus: Panel (64px), WM (Yaru-dark), GTK Settings (DPI 140, Large Cursor)
 
+# 0. Install Themes if running in Ubuntu/Debian
+if command -v apt &>/dev/null; then
+    echo ">>> Installing Themes and Icons..."
+    sudo apt-get update -q
+    sudo apt-get install -y -q --no-install-recommends yaru-theme-gtk papirus-icon-theme
+fi
+
 # 1. Ensure directories exist
 CONF_DIR="$HOME/.config/xfce4/xfconf/xfce-perchannel-xml"
 mkdir -p "$CONF_DIR"
