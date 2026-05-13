@@ -88,15 +88,15 @@ export XDG_RUNTIME_DIR=/tmp
 export PATH=/home/${PROOT_USER}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # NVM Initialization (if exists)
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+export NVM_DIR="\$HOME/.config/nvm"
+[ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
 
 alias update='sudo apt-get update && sudo apt-get upgrade -y'
 
 # Termux:API Aliases
 TAPI_CMDS="battery-status notification toast vibrate volume-get volume-set brightness wallpaper"
-for cmd in $TAPI_CMDS; do
-    alias termux-$cmd="tapi termux-$cmd"
+for cmd in \$TAPI_CMDS; do
+    alias termux-\$cmd="tapi termux-\$cmd"
 done
 BASHEOF
 
