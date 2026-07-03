@@ -2,18 +2,25 @@
 # 📱 DroidDesk XFCE Pre-config Applier
 # Focus: Panel (64px), WM (Yaru-dark), GTK Settings (DPI 140, Large Cursor)
 
-# 0. Install Themes if running in Ubuntu/Debian
+# 0. If running on Termux host, re-run inside PRoot
+if [ -n "$TERMUX_VERSION" ]; then
+    echo ">>> Detected Termux host. Logging into Ubuntu to apply config..."
+    proot-distro login ubuntu -- su - admin -c "bash ~/DroidDesk/apply-xfce-config.sh"
+    exit $?
+fi
+
+# 1. Install Themes if running in Ubuntu/Debian
 if command -v apt &>/dev/null; then
     echo ">>> Installing Themes and Icons..."
     sudo apt-get update -q
     sudo apt-get install -y -q --no-install-recommends yaru-theme-gtk papirus-icon-theme
 fi
 
-# 1. Ensure directories exist
+# 2. Ensure directories exist
 CONF_DIR="$HOME/.config/xfce4/xfconf/xfce-perchannel-xml"
 mkdir -p "$CONF_DIR"
 
-# 2. Apply Panel Config (64px bottom, dark mode, tasklist with icons only)
+# 3. Apply Panel Config (64px bottom, dark mode, tasklist with icons only)
 cat <<EOF > "$CONF_DIR/xfce4-panel.xml"
 <?xml version="1.1" encoding="UTF-8"?>
 <channel name="xfce4-panel" version="1.0">
@@ -50,7 +57,7 @@ cat <<EOF > "$CONF_DIR/xfce4-panel.xml"
 </channel>
 EOF
 
-# 3. Apply Window Manager Config (Yaru-dark theme, centered placement)
+# 4. Apply Window Manager Config (Yaru-dark theme, centered placement)
 cat <<EOF > "$CONF_DIR/xfwm4.xml"
 <?xml version="1.1" encoding="UTF-8"?>
 <channel name="xfwm4" version="1.0">
@@ -66,7 +73,7 @@ cat <<EOF > "$CONF_DIR/xfwm4.xml"
 </channel>
 EOF
 
-# 4. Apply Settings (DPI 140, Large Cursor 64px, Yaru-dark GTK, Papirus-Dark Icons)
+# 5. Apply Settings (DPI 140, Large Cursor 64px, Yaru-dark GTK, Papirus-Dark Icons)
 cat <<EOF > "$CONF_DIR/xsettings.xml"
 <?xml version="1.1" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
@@ -89,7 +96,7 @@ cat <<EOF > "$CONF_DIR/xsettings.xml"
 </channel>
 EOF
 
-# 5. Apply Solid Black Wallpaper
+# 6. Apply Solid Black Wallpaper
 cat <<EOF > "$CONF_DIR/xfce4-desktop.xml"
 <?xml version="1.1" encoding="UTF-8"?>
 <channel name="xfce4-desktop" version="1.0">
