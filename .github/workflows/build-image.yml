@@ -6,6 +6,7 @@ on:
     paths:
       - 'image/**'
       - 'version.txt'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:
