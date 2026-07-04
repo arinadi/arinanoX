@@ -10,7 +10,7 @@ cp "${DROIDDESK_DIR}/run-api-bridge.sh" ~/run-api-bridge.sh
 chmod +x ~/run-api-bridge.sh
 
 # 2. Create tapi client inside proot
-proot-distro login ubuntu -- bash -c '
+proot-distro login droiddesk -- bash -c '
     cat > /usr/local/bin/tapi << "TAPIOF"
 #!/bin/bash
 # tapi (Termux-API-Bridge-Client)
