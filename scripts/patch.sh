@@ -93,7 +93,7 @@ if $INTERACTIVE; then
     for key in $(echo "${!PATCHES[@]}" | tr ' ' '\n' | sort); do
         IFS='|' read -r desc cmd <<< "${PATCHES[$key]}"
         printf "  %-14s %s" "[$key]" "$desc"
-        read -rp " Install? [y/N] " ans < /dev/tty
+        if [ -t 0 ]; then read -rp " Install? [y/N] " ans; else ans="y"; fi
         if [[ "$ans" =~ ^[Yy]$ ]]; then
             SELECTED+=("$key")
         fi
@@ -106,7 +106,7 @@ if $INTERACTIVE; then
     fi
 
     echo "Will install: ${SELECTED[*]}"
-    read -rp "Proceed? [Y/n] " confirm < /dev/tty
+    if [ -t 0 ]; then read -rp "Proceed? [Y/n] " confirm; else confirm="y"; fi
     if [[ "$confirm" =~ ^[Nn]$ ]]; then
         echo "Cancelled."
         exit 0
