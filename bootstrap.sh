@@ -24,47 +24,69 @@ if [ -z "$REMOTE_VER" ]; then
     REMOTE_VER="unknown"
 fi
 
-# --- Menu ---
-echo ""
-echo "╔═══════════════════════════════════════╗"
-echo "║  📱 DroidDesk — Linux on Android      ║"
-echo "╠═══════════════════════════════════════╣"
-
-if $INSTALLED; then
-    echo "║  Installed: v${LOCAL_VER}                       ║"
-    echo "║  Available: v${REMOTE_VER}                       ║"
-    echo "╠═══════════════════════════════════════╣"
-    echo "║                                       ║"
-    echo "║  [1] Update                           ║"
-    echo "║  [2] Reinstall (fresh)                ║"
-    echo "║  [3] Uninstall                        ║"
-    echo "║  [4] Exit                             ║"
-    echo "║                                       ║"
+# --- Detect if stdin is terminal ---
+if [ -t 0 ]; then
+    INTERACTIVE=true
 else
-    echo "║  Available: v${REMOTE_VER}                       ║"
-    echo "╠═══════════════════════════════════════╣"
-    echo "║                                       ║"
-    echo "║  [1] Install                          ║"
-    echo "║  [2] Exit                             ║"
-    echo "║                                       ║"
+    INTERACTIVE=false
 fi
-echo "╚═══════════════════════════════════════╝"
-echo ""
 
-read -rp "  Choose: " CHOICE < /dev/tty
+# --- Menu (only when interactive) ---
+if $INTERACTIVE; then
+    echo ""
+    echo "╔═══════════════════════════════════════╗"
+    echo "║  📱 DroidDesk — Linux on Android      ║"
+    echo "╠═══════════════════════════════════════╣"
 
-if $INSTALLED; then
-    case "$CHOICE" in
-        1) ACTION="update" ;;
-        2) ACTION="install" ;;
-        3) ACTION="uninstall" ;;
-        4|*) echo ">>> Bye!"; exit 0 ;;
-    esac
+    if $INSTALLED; then
+        echo "║  Installed: v${LOCAL_VER}                       ║"
+        echo "║  Available: v${REMOTE_VER}                       ║"
+        echo "╠═══════════════════════════════════════╣"
+        echo "║                                       ║"
+        echo "║  [1] Update                           ║"
+        echo "║  [2] Reinstall (fresh)                ║"
+        echo "║  [3] Uninstall                        ║"
+        echo "║  [4] Exit                             ║"
+        echo "║                                       ║"
+    else
+        echo "║  Available: v${REMOTE_VER}                       ║"
+        echo "╠═══════════════════════════════════════╣"
+        echo "║                                       ║"
+        echo "║  [1] Install                          ║"
+        echo "║  [2] Exit                             ║"
+        echo "║                                       ║"
+    fi
+    echo "╚═══════════════════════════════════════╝"
+    echo ""
+
+    read -rp "  Choose: " CHOICE
+
+    if $INSTALLED; then
+        case "$CHOICE" in
+            1) ACTION="update" ;;
+            2) ACTION="install" ;;
+            3) ACTION="uninstall" ;;
+            4|*) echo ">>> Bye!"; exit 0 ;;
+        esac
+    else
+        case "$CHOICE" in
+            2|4) echo ">>> Bye!"; exit 0 ;;
+            *) ACTION="install" ;;
+        esac
+    fi
 else
-    case "$CHOICE" in
-        2|4) echo ">>> Bye!"; exit 0 ;;
-        *) ACTION="install" ;;
-    esac
+    # Non-interactive (curl | bash): auto-detect action
+    if $INSTALLED; then
+        if [ "$REMOTE_VER" = "$LOCAL_VER" ]; then
+            echo ">>> DroidDesk v${LOCAL_VER} — already up to date."
+            exit 0
+        fi
+        echo ">>> DroidDesk v${LOCAL_VER} → updating to v${REMOTE_VER}..."
+        ACTION="update"
+    else
+        echo ">>> Installing DroidDesk v${REMOTE_VER}..."
+        ACTION="install"
+    fi
 fi
 
 # --- Uninstall ---
@@ -81,10 +103,6 @@ if [ "$ACTION" = "install" ]; then
     rm -rf "$DROIDDESK_DIR"
     mkdir -p "$SCRIPTS_DIR" "$LAUNCHERS_DIR"
 elif [ "$ACTION" = "update" ]; then
-    if [ "$REMOTE_VER" = "$LOCAL_VER" ]; then
-        echo ">>> Already up to date (v${LOCAL_VER})."
-        exit 0
-    fi
     echo ">>> Updating: v${LOCAL_VER} → v${REMOTE_VER}"
 fi
 
