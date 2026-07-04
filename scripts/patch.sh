@@ -3,13 +3,9 @@ set -euo pipefail
 
 # patch.sh — Install optional software into DroidDesk proot
 # Interactive (no args) or CLI (with flags)
-# Run: bash ~/.droiddesk/scripts/patch.sh
-#   or: bash ~/.droiddesk/scripts/patch.sh --firefox --code --nodejs
 
 CONTAINER="droiddesk"
 
-# === Available patches ===
-# Format: key="name|install command"
 declare -A PATCHES
 
 # Browsers
@@ -36,12 +32,8 @@ PATCHES[neovim]="Neovim|apt-get install -y neovim"
 PATCHES[nala]="Nala (Modern APT)|apt-get install -y nala"
 PATCHES[docker]="Docker (rootless)|curl -fsSL https://get.docker.com | sh"
 
-# CLI Tools
-PATCHES[jq]="JSON Processor|apt-get install -y jq"
-PATCHES[tree]="Directory Tree|apt-get install -y tree"
+# CLI Tools (only ones NOT in image)
 PATCHES[ripgrep]="Fast Grep (rg)|apt-get install -y ripgrep"
-PATCHES[sqlite3]="SQLite CLI|apt-get install -y sqlite3"
-PATCHES[zip]="ZIP/UNZIP Tools|apt-get install -y zip unzip"
 
 # GUI Apps
 PATCHES[viewnior]="Image Viewer (Viewnior)|apt-get install -y viewnior"
@@ -72,11 +64,7 @@ if [ $# -gt 0 ]; then
             --neovim)     SELECTED+=("neovim") ;;
             --nala)       SELECTED+=("nala") ;;
             --docker)     SELECTED+=("docker") ;;
-            --jq)         SELECTED+=("jq") ;;
-            --tree)       SELECTED+=("tree") ;;
             --ripgrep)    SELECTED+=("ripgrep") ;;
-            --sqlite3)    SELECTED+=("sqlite3") ;;
-            --zip)        SELECTED+=("zip") ;;
             --viewnior)   SELECTED+=("viewnior") ;;
             --xarchiver)  SELECTED+=("xarchiver") ;;
             --galculator) SELECTED+=("galculator") ;;
