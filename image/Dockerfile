@@ -29,6 +29,7 @@ RUN apt-get update && \
         xfdesktop4 \
         fonts-noto \
         pulseaudio-utils \
+        gnome-themes-extra-data \
         libgl1 \
         mesa-utils \
         netcat-openbsd \
