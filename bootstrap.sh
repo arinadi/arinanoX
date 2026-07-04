@@ -144,7 +144,8 @@ bash "${SCRIPTS_DIR}/api-bridge-setup.sh"
 
 echo ""
 echo ">>> Applying XFCE mobile theme..."
-bash "${SCRIPTS_DIR}/xfce-config.sh"
+proot-distro login droiddesk -- su - admin -c "bash /home/admin/.droiddesk/scripts/xfce-config.sh" 2>/dev/null || \
+    bash "${SCRIPTS_DIR}/xfce-config.sh"
 
 echo ""
 echo ">>> Installing launchers..."
