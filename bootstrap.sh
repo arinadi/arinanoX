@@ -62,8 +62,8 @@ if $INSTALLED; then
     esac
 else
     case "$CHOICE" in
-        1) ACTION="install" ;;
-        2|*) echo ">>> Bye!"; exit 0 ;;
+        2|4) echo ">>> Bye!"; exit 0 ;;
+        *) ACTION="install" ;;
     esac
 fi
 
