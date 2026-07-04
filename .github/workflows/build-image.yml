@@ -42,7 +42,7 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/droiddesk:latest
+            ghcr.io/${{ github.repository_owner }}/droiddesk:${{ steps.version.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
