@@ -48,7 +48,7 @@ Connect a monitor and it's a Linux PC. Unplug and your entire setup comes with y
 - [Termux](https://f-droid.org/en/packages/com.termux/) (from F-Droid, NOT Play Store)
 - [Termux:X11](https://github.com/termux/termux-x11/releases/tag/nightly) app
 - [Termux:API](https://f-droid.org/en/packages/com.termux.api/) app (optional)
-- [Termux:Widget](https://f-droid.org/en/packages/com.termux.widget/) app (optional, for home screen shortcuts)
+- [Termux:Widget](https://f-droid.org/en/packages/com.termux.widget/) app (**recommended** — one-tap launchers from home screen)
 
 ### Install
 
