@@ -31,9 +31,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Read version
+      - name: Generate version from commit count
         id: version
-        run: echo "version=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
+        run: |
+          COUNT=$(git rev-list --count HEAD)
+          echo "version=1.0.${COUNT}" >> $GITHUB_OUTPUT
+          echo "1.0.${COUNT}" > version.txt
 
       - name: Build and push
         uses: docker/build-push-action@v5
