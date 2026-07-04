@@ -51,7 +51,7 @@ fi
 echo "╚═══════════════════════════════════════╝"
 echo ""
 
-read -rp "  Choose: " CHOICE
+read -rp "  Choose: " CHOICE < /dev/tty
 
 if $INSTALLED; then
     case "$CHOICE" in
