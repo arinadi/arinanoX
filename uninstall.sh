@@ -20,7 +20,7 @@ echo "  • ~/storage/ (Android storage)"
 echo "  • ~/.bashrc (Termux config)"
 echo ""
 
-read -rp "Proceed? [y/N] " confirm
+read -rp "Proceed? [y/N] " confirm < /dev/tty
 if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
     echo "Cancelled."
     exit 0
