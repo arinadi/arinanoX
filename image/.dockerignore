@@ -1,4 +1,1 @@
 .git
-*.md
-*.sh
-!configs/
