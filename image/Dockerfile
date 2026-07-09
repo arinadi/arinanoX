@@ -100,6 +100,7 @@ RUN mkdir -p /home/admin/.config/gtk-3.0
 COPY configs/gtk.css /home/admin/.config/gtk-3.0/gtk.css
 
 RUN mkdir -p /home/admin/.config/xfce4/xfconf/xfce-perchannel-xml
+COPY configs/xfwm4.xml /home/admin/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
 COPY configs/thunar.xml /home/admin/.config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml
 
 RUN mkdir -p /home/admin/.droiddesk/tools /home/admin/.config/autostart

@@ -32,7 +32,7 @@ echo "  [*] Performing deep residue cleanup inside proot..."
 proot-distro login droiddesk -- bash -c "rm -rf /tmp/xdg-* /tmp/dbus-* /tmp/.xfsm-ICE-* /tmp/.X11-unix/* /home/admin/.cache/sessions/* /home/admin/.ICEauthority /home/admin/.Xauthority 2>/dev/null"
 
 # Clean temp and session cache inside rootfs from host side (Double Layer)
-ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/droiddesk"
+ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/containers/droiddesk/rootfs"
 if [ -d "$ROOTFS" ]; then
     echo "  [*] Cleaning host-side mounts and temp files..."
     rm -rf "$ROOTFS/tmp/.X"* 2>/dev/null

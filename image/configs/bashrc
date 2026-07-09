@@ -1,6 +1,7 @@
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=/tmp
 export NO_AT_BRIDGE=1
+export LIBGL_ALWAYS_SOFTWARE=1
 
 # Clean PATH from Termux pollution
 export PATH=/home/admin/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

@@ -6,7 +6,7 @@ set -euo pipefail
 
 CONTAINER="droiddesk"
 BACKUP_DIR="$HOME/.droiddesk/backups"
-ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/${CONTAINER}"
+ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/containers/${CONTAINER}/rootfs"
 
 LATEST_PKG="${BACKUP_DIR}/packages-latest.txt"
 LATEST_HOME="${BACKUP_DIR}/home-latest.tar.gz"

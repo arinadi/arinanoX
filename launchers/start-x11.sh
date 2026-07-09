@@ -1,4 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
+TERMUX_TMP="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
+export XDG_RUNTIME_DIR="$TERMUX_TMP"
+
 # Start PulseAudio
 echo ">>> Starting PulseAudio..."
 pulseaudio --start --exit-idle-time=-1
@@ -7,7 +10,7 @@ pulseaudio --start --exit-idle-time=-1
 pactl load-module module-aaudio-sink 2>/dev/null || pactl load-module module-sles-sink 2>/dev/null
 
 # Load TCP Protocol for Proot Access
-pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 2>/dev/null
+pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 port=4713 2>/dev/null
 
 # Start Termux:API Bridge
 echo ">>> Starting Termux:API Bridge..."

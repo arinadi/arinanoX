@@ -7,7 +7,7 @@ set -euo pipefail
 CONTAINER="droiddesk"
 BACKUP_DIR="$HOME/.droiddesk/backups"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/${CONTAINER}"
+ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/containers/${CONTAINER}/rootfs"
 
 mkdir -p "$BACKUP_DIR"
 
