@@ -86,6 +86,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 # xfce4-session calls pm-is-supported repeatedly — stub it
 RUN printf '#!/bin/sh\nexit 1\n' > /usr/bin/pm-is-supported && chmod +x /usr/bin/pm-is-supported
 
+# xfce4-power-manager needs systemd — disable autostart
+RUN printf '[Desktop Entry]\nHidden=true\n' > /etc/xdg/autostart/xfce4-power-manager.desktop
+
 # ──── Create admin user ────
 RUN useradd -m -s /bin/bash admin && \
     echo "admin:admin" | chpasswd && \
