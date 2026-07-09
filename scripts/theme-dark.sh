@@ -1,8 +1,7 @@
 #!/bin/bash
 # ═══════════════════════════════════════════
 #  DroidDesk Dark Mobile Theme
-#  Blackbird GTK + Breeze-dark icons + 64px panel
-#  Usage: bash ~/.droiddesk/scripts/theme-dark.sh
+#  Blackbird GTK + xfwm4 + Adwaita icons + 64px panel
 # ═══════════════════════════════════════════
 
 CONF_DIR="$HOME/.config/xfce4/xfconf/xfce-perchannel-xml"
@@ -10,20 +9,20 @@ mkdir -p "$CONF_DIR"
 
 echo ">>> Applying DroidDesk Dark Mobile Theme..."
 
-# ── xsettings: Blackbird GTK, Breeze-dark icons, DPI 120 ──
+# ── xsettings: Blackbird, Adwaita-dark icons, DPI 96 + Scale 2 ──
 cat > "$CONF_DIR/xsettings.xml" << 'XEOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Net" type="empty">
     <property name="ThemeName" type="string" value="Blackbird"/>
-    <property name="IconThemeName" type="string" value="breeze-dark"/>
+    <property name="IconThemeName" type="string" value="Adwaita"/>
     <property name="IconSizes" type="string" value="gtk-large=48,48:gtk-dialog=48,48:gtk-menus=48,48:gtk-toolbar=48,48"/>
   </property>
   <property name="Xft" type="empty">
     <property name="DPI" type="int" value="96"/>
   </property>
   <property name="Gtk" type="empty">
-    <property name="FontName" type="string" value="Sans 11"/>
+    <property name="FontName" type="string" value="Sans 12"/>
     <property name="CursorThemeName" type="string" value="Adwaita"/>
     <property name="CursorThemeSize" type="int" value="24"/>
     <property name="DecorationLayout" type="string" value="icon,menu:minimize,maximize,close"/>
@@ -36,23 +35,26 @@ cat > "$CONF_DIR/xsettings.xml" << 'XEOF'
 </channel>
 XEOF
 
-# ── xfwm4: Blackbird, center, no compositing ──
+# ── xfwm4: Blackbird (has xfwm4 theme), center, no compositing ──
 cat > "$CONF_DIR/xfwm4.xml" << 'WMEOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <channel name="xfwm4" version="1.0">
   <property name="general" type="empty">
     <property name="use_compositing" type="bool" value="false"/>
-    <property name="theme" type="string" value="Blackbird"/>
+    <property name="theme" type="string" value="Default-xhdpi"/>
     <property name="button_layout" type="string" value="O|SHMC"/>
     <property name="placement_mode" type="string" value="center"/>
     <property name="borderless_maximize" type="bool" value="true"/>
     <property name="title_alignment" type="string" value="center"/>
     <property name="title_font" type="string" value="Sans Bold 11"/>
+    <property name="snap_to_border" type="bool" value="true"/>
+    <property name="snap_to_windows" type="bool" value="true"/>
+    <property name="wrap_windows" type="bool" value="true"/>
   </property>
 </channel>
 WMEOF
 
-# ── Panel: 64px dark, Whisker Menu, mobile layout ──
+# ── Panel: 64px dark, Whisker Menu ──
 cat > "$CONF_DIR/xfce4-panel.xml" << 'PEOF'
 <?xml version="1.1" encoding="UTF-8"?>
 <channel name="xfce4-panel" version="1.0">
@@ -125,10 +127,12 @@ echo "╔═══════════════════════�
 echo "║  🌙 Dark Mobile Theme Applied     ║"
 echo "╠═══════════════════════════════════╣"
 echo "║  GTK:   Blackbird (dark)          ║"
-echo "║  Icons: Breeze-dark               ║"
-echo "║  WM:    Blackbird, no compositing ║"
-echo "║  Panel: 64px dark, mobile layout  ║"
-echo "║  DPI:   96 (Scale 2x)              ║"
+echo "║  Icons: Adwaita (dark)            ║"
+echo "║  WM:    Default-xhdpi (large borders)║"
+echo "║  Panel: 64px dark, 8 plugins      ║"
+echo "║  DPI:   96 + Scale 2x             ║"
+echo "║  Font:  Sans 12                   ║"
+echo "║  Cursor: 24px (2x → 48px)         ║"
 echo "╠═══════════════════════════════════╣"
 echo "║  Restart XFCE to apply            ║"
 echo "╚═══════════════════════════════════╝"
