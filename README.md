@@ -23,39 +23,46 @@ Installs XFCE desktop, launchers, and all built-in tools. **Under 30 seconds.**
 
 ---
 
-## 🚀 Start / Stop / Update
+## 🏗️ How It Works
 
-```bash
-bash ~/start-x11.sh    # Start X11 server + audio
-# → Open Termux:X11 app
-bash ~/start-xfce.sh   # Start XFCE desktop
-
-bash ~/kill-all.sh     # Stop everything
-bash ~/update.sh       # Update DroidDesk
 ```
+┌─────────────────────────────────────┐
+│  USER LAYER (mutable)               │  ← Your packages, configs, data
+│  VS Code, Chromium, Ollama, etc.    │     Preserved across updates
+├─────────────────────────────────────┤
+│  IMAGE LAYER (immutable)            │  ← Pre-built from Dockerfile
+│  Debian 13 + XFCE + Firefox + dev   │     ghcr.io/arinadi/droiddesk
+└─────────────────────────────────────┘
+```
+
+**Two-layer architecture:**
+- **Image layer** (immutable) — Debian 13 ARM64, XFCE, Firefox ESR, dev tools. Pre-built on GHCR. Download once.
+- **User layer** (mutable) — Your packages via `patch.sh`, dotfiles, configs. Preserved across updates via auto backup/restore.
+
+**Base:** Debian 13 (Trixie). Firefox ESR from native repos — zero external APT sources. **Update:** `bash ~/update.sh` pulls latest image, restores user layer.
 
 ---
 
-## 📦 Built-In + Install More
+## 📦 Built-In + Extras
 
-### Already in the image (no install needed)
+### In the image (ready to use)
 
 | Category | Tools |
 |----------|-------|
-| 🌐 Browser | Firefox ESR (native Debian repo) |
+| 🌐 Browser | Firefox ESR |
 | 🖥️ Desktop | XFCE4 + Whisker Menu + Power Manager + PulseAudio tray |
 | 🖱️ Touch | Single-click Thunar, large scrollbars, clipboard auto-sync |
-| 📝 Apps | Mousepad, Ristretto |
+| 📝 Apps | Mousepad (editor), Ristretto (images) |
 | 🔧 Dev | Git, Node.js 22 LTS, Python 3 (pip/venv/dev), GCC, Make, CMake |
 | 📊 Sys | htop, tmux, OpenSSH |
-| 🎨 Icons | Adwaita + librsvg (SVG support) |
+| 🎨 Theme | Adwaita icons, Greybird, SVG support |
 
-### Install extras via patch
+### Install more with patch
 
 ```bash
-bash ~/.droiddesk/scripts/patch.sh              # Interactive menu
+bash ~/.droiddesk/scripts/patch.sh                    # Interactive
 bash ~/.droiddesk/scripts/patch.sh --chromium --code --zsh
-bash ~/.droiddesk/scripts/patch.sh --list       # See all
+bash ~/.droiddesk/scripts/patch.sh --list
 ```
 
 | Category | Packages |
@@ -69,20 +76,29 @@ bash ~/.droiddesk/scripts/patch.sh --list       # See all
 
 ---
 
-## 📱 Termux:Widget (1-tap launchers)
+## 🚀 Start / Stop / Update
 
-Auto-created in `~/.shortcuts/`. Add Termux:Widget to home screen.
+```bash
+bash ~/start-x11.sh    # X11 server + PulseAudio
+# → Open Termux:X11 app
+bash ~/start-xfce.sh   # XFCE desktop
+
+bash ~/kill-all.sh     # Stop everything
+bash ~/update.sh       # Update DroidDesk
+```
+
+### 📱 Termux:Widget (1-tap launchers)
 
 | Shortcut | Action |
 |----------|--------|
-| 🟢 `start-x11.sh` | Start X11 + audio |
-| 🟢 `start-xfce.sh` | Start desktop |
-| 🔴 `kill-all.sh` | Stop everything |
+| 🟢 `start-x11.sh` | X11 + audio |
+| 🟢 `start-xfce.sh` | Desktop |
+| 🔴 `kill-all.sh` | Stop all |
 | 🔄 `update.sh` | Update |
 
 ---
 
-## 📱 Commands
+## 📋 Commands
 
 ### Desktop
 
@@ -99,23 +115,23 @@ Auto-created in `~/.shortcuts/`. Add Termux:Widget to home screen.
 | Command | Action |
 |---------|--------|
 | `battery` | Battery % and health |
-| `clipget` / `clipset` | Android clipboard sync |
+| `clipget` / `clipset` | Android clipboard |
 | `vol-up` / `vol-down` | Media volume |
-| `bright 50` | Screen brightness 0-100 |
-| `toast "msg"` | Android toast popup |
-| `notify "T" "B"` | Notification bar |
+| `bright 50` | Brightness 0-100 |
+| `toast "msg"` | Toast popup |
+| `notify "T" "B"` | Notification |
 | `buzz` | Short vibration |
 | `speak "hello"` | Text-to-speech |
 | `listen` | Speech-to-text |
-| `openurl` / `share` | Open/share in Android |
-| `whereami` / `wifi` | GPS / WiFi info |
+| `openurl` / `share` | Open / share in Android |
+| `whereami` / `wifi` | GPS / WiFi |
 | `photo` / `flash` | Camera / flashlight |
 
-### Panel Widgets (add via Whisker Menu → Panel → Generic Monitor)
+### Panel Widgets (Whisker Menu → Panel → Add → Generic Monitor)
 
 ```
-bash ~/.droiddesk/tools/genmon-battery.sh   # 🔋 battery widget
-bash ~/.droiddesk/tools/genmon-volume.sh    # 🔊 volume widget
+bash ~/.droiddesk/tools/genmon-battery.sh   # 🔋
+bash ~/.droiddesk/tools/genmon-volume.sh    # 🔊
 ```
 
 ---
@@ -128,24 +144,7 @@ bash ~/.droiddesk/tools/genmon-volume.sh    # 🔊 volume widget
 | No glibc apps | Debian 13 proot — standard glibc |
 | No dev tools | Node.js 22, Python 3, GCC, CMake built-in |
 | Background killed | Termux:WakeLock keeps sessions alive |
-| No clipboard bridge | Auto-sync Android ↔ proot clipboard |
-
----
-
-## 🏗️ How It Works
-
-```
-┌─────────────────────────────────────┐
-│  USER LAYER (mutable)               │  ← Your packages, configs, data
-│  VS Code, Chromium, Ollama, etc.    │     Preserved across updates
-├─────────────────────────────────────┤
-│  IMAGE LAYER (immutable)            │  ← Pre-built from Dockerfile
-│  Debian 13 + XFCE + Firefox + dev   │     ghcr.io/arinadi/droiddesk
-└─────────────────────────────────────┘
-```
-
-**Base:** Debian 13 (Trixie) ARM64. Firefox ESR from native repos — no external APT sources.
-**Install:** Pull pre-built image from GHCR (~30s). **Update:** `bash ~/update.sh`. **Major upgrade:** auto backup/restore preserves your data.
+| No clipboard bridge | Auto-sync Android ↔ proot |
 
 ---
 
