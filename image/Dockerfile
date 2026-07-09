@@ -48,7 +48,7 @@ RUN apt-get update && \
 # GUI apps
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        mousepad ristretto && \
+        mousepad ristretto tumbler && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Dev tools
