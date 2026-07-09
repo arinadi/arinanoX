@@ -22,12 +22,12 @@ That's it. Installs XFCE desktop with stock theme and all launchers. **Under 30 
 
 Connect a monitor and it's a Linux PC. Unplug and your entire setup comes with you.
 
-- 🖥️ **Full Desktop** — XFCE4 with Whisker Menu, Firefox ESR, Mousepad, Git
-- 🖱️ **Touch Optimized** — Single-click Thunar, large scrollbars, gesture-friendly
-- 🌐 **Real Browsers** — Firefox ESR that doesn't sleep when screen is off
-- 💻 **Real IDE** — VS Code, Geany, Neovim with native Node.js 22, Go, Python 3
+- 🖥️ **Full Desktop** — XFCE4 + Whisker Menu, Firefox ESR, Mousepad, touch-friendly
+- 🖱️ **Touch Optimized** — Single-click Thunar, large scrollbars, XFCE power/pulseaudio tray
+- 🌐 **Real Browsers** — Firefox ESR native from Debian repos, no external APT needed
+- 💻 **Ready to Code** — Node.js 22, Python 3 (pip/venv/dev), GCC, CMake, Git
 - 🤖 **Local AI** — Ollama runs LLMs offline, 5+ tokens/sec
-- 📱 **Android Integration** — Battery, clipboard sync, volume, camera, voice from terminal
+- 📱 **Android Integration** — Battery, clipboard sync, volume, camera, voice, GPS
 
 ### Overcomes Android's Biggest Limitations
 
@@ -37,7 +37,7 @@ Connect a monitor and it's a Linux PC. Unplug and your entire setup comes with y
 | No glibc apps | Debian proot with standard glibc |
 | Can't run VS Code | Native Linux VS Code with extensions |
 | Background processes killed | Termux:WakeLock keeps sessions alive |
-| No developer tools | Full gcc, Node.js, Python, Docker |
+| No developer tools | GCC, CMake, Node.js 22, Python 3 built-in |
 
 ---
 
@@ -107,7 +107,7 @@ After setup, add software with the patch installer:
 bash ~/.droiddesk/scripts/patch.sh
 
 # Or install specific packages
-bash ~/.droiddesk/scripts/patch.sh --chromium --code --node
+bash ~/.droiddesk/scripts/patch.sh --chromium --code --zsh
 
 # See all available
 bash ~/.droiddesk/scripts/patch.sh --list
@@ -124,7 +124,7 @@ bash ~/.droiddesk/scripts/patch.sh --list
 | 🔧 CLI | ripgrep, GitHub CLI |
 | 🎨 GUI | Viewnior, Xarchiver, Galculator |
 
-> **Built into image**: Firefox ESR, Mousepad, Ristretto, Git, Node.js 22 LTS, Python 3 (pip/venv/dev), GCC/Make/CMake, htop, tmux, OpenSSH. Stock XFCE (Greybird).
+> **Built into image**: Firefox ESR, Mousepad, Ristretto, Git, Node.js 22 LTS, Python 3 (pip/venv/dev), GCC/Make/CMake/pkg-config, htop, tmux, OpenSSH, xfce4-whiskermenu/power-manager/pulseaudio/genmon. Adwaita icons, single-click Thunar, clipboard auto-sync. Stock XFCE Greybird theme.
 
 ---
 
@@ -148,7 +148,7 @@ Or re-run install — it detects existing installation and offers to update.
 │  VS Code, Chromium, Ollama, etc.    │     Preserved across updates
 ├─────────────────────────────────────┤
 │  IMAGE LAYER (immutable)            │  ← Pre-built from Dockerfile
-│  Debian 13 + XFCE + dev tools        │     ghcr.io/arinadi/droiddesk
+│  Debian 13 + XFCE + Firefox ESR + dev  │     ghcr.io/arinadi/droiddesk
 └─────────────────────────────────────┘
 ```
 
@@ -160,6 +160,8 @@ DroidDesk uses the **official Debian 13 (Trixie) Docker image** (`debian:13`) as
 - ARM64 native support for Android devices
 - Full apt package repository access
 - Firefox ESR directly from Debian repos (no external APT source)
+
+### Update Workflow
 
 - **Install:** Pull pre-built image from GHCR (~30 seconds)
 - **Update scripts:** Download new launchers from GitHub
