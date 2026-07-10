@@ -7,7 +7,7 @@
     <a href="https://github.com/arinadi/arinanoX/blob/main/LICENSE"><img src="https://img.shields.io/github/license/arinadi/arinanoX"></a>
   </p>
 
-  <pre>curl -sL https://arinano.work/sh | bash</pre>
+  <pre>curl -sL https://raw.githubusercontent.com/arinadi/arinanoX/main/bootstrap.sh | bash</pre>
 
   <img src="docs/arinanox-screenshot.jpg" alt="arinanoX desktop" width="360" style="border-radius:12px;">
   <p>
