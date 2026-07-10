@@ -1,11 +1,33 @@
 <div align="center">
   <h1>📱 arinanoX</h1>
-  <p><strong>Your phone is a Linux workstation.</strong></p>
-  <p>Debian 13 on Android via Termux + proot. XFCE desktop, Firefox ESR, dev tools — declarative, atomic, touch-optimized.</p>
-  <p><a href="https://arinano.work">arinano.work</a></p>
-
-  <img src="docs/arinanox-screenshot.jpg" alt="arinanoX" width="320" style="border-radius:12px;margin:16px 0;">
+  <p><strong>Your phone is a Linux workstation — in 30 seconds.</strong></p>
+  <p>
+    Debian 13 &nbsp;·&nbsp; XFCE &nbsp;·&nbsp; Firefox ESR &nbsp;·&nbsp; Dev tools &nbsp;·&nbsp; Touch-optimized
+  </p>
+  <p><strong>X</strong> = TermuX&nbsp;→&nbsp;X11&nbsp;→&nbsp;LinuX&nbsp;→&nbsp;Trixie&nbsp;→&nbsp;XFCE</p>
+  <p>
+    <a href="https://arinano.work"><img src="https://img.shields.io/badge/site-arinano.work-blue"></a>
+    <a href="https://github.com/arinadi/arinanoX/actions"><img src="https://img.shields.io/github/actions/workflow/status/arinadi/arinanoX/build-image.yml?label=build"></a>
+    <a href="https://github.com/arinadi/arinanoX/blob/main/LICENSE"><img src="https://img.shields.io/github/license/arinadi/arinanoX"></a>
+  </p>
+  <br>
+  <img src="docs/arinanox-screenshot.jpg" alt="arinanoX desktop" width="360" style="border-radius:12px;">
 </div>
+
+---
+
+## ⚡ Why
+
+Your Android phone is a pocket PC with 8GB+ RAM and an ARM64 CPU — it deserves a real desktop.
+
+| | arinanoX |
+|---|---|
+| 🏗️ | **Declarative.** A single Dockerfile defines the entire system. Like NixOS, but on Debian. |
+| ⚡ | **Prebuilt.** 580MB image from CI. Extract and run — 30 seconds. No 30-minute apt wait. |
+| 🔄 | **Atomic.** Updates to a fresh image. Old one kept as `arinanox-prev`. Instant rollback. |
+| 🎯 | **Proot-aware.** Compositing off, power daemon removed, all systemd warnings suppressed. |
+| 🎨 | **Orchis Material Design + elementary-hidpi icons.** Dark, touch-friendly, baked in. |
+| 📱 | **Termux:API.** Battery, clipboard, voice, camera, notifications — from inside proot. |
 
 ---
 
