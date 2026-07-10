@@ -30,7 +30,7 @@ Installs XFCE desktop, launchers, and all built-in tools. **Under 30 seconds.**
 │  USER LAYER (mutable)               │  ← Your packages, configs, data
 │  VS Code, Chromium, Ollama, etc.    │     Preserved across updates
 ├─────────────────────────────────────┤
-│  IMAGE LAYER (immutable)            │  ← Pre-built from Dockerfile
+│  CORE LAYER (declarative & reproducible) │  ← Built from Dockerfile in CI
 │  Debian 13 + XFCE + Firefox + dev   │     ghcr.io/arinadi/droiddesk
 └─────────────────────────────────────┘
 ```
@@ -179,7 +179,7 @@ bash ~/.droiddesk/tools/genmon-volume.sh    # 🔊
 | No native X11 | Termux:X11 app |
 | Storage restrictions | `termux-setup-storage` |
 
-All warnings (systemd proxy, system bus, DPMS, GL renderer) are suppressed at the image layer — DroidDesk runs clean out of the box.
+All warnings (systemd proxy, system bus, DPMS, GL renderer) are suppressed at the declarative layer — DroidDesk runs clean out of the box.
 
 **Cannot do:** Docker containers, GPU hardware access, systemd services, x86 natively.
 
