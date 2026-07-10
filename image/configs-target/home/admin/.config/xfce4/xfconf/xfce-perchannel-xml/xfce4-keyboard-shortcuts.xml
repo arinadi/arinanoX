@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-keyboard-shortcuts" version="1.0">
+  <property name="commands" type="empty">
+    <property name="default" type="empty">
+      <property name="&lt;Primary&gt;&lt;Alt&gt;r" type="string" value="xdotool click 3"/>
+    </property>
+  </property>
+</channel>

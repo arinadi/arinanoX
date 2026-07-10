@@ -25,7 +25,8 @@ RUN apt-get update && \
         xfce4-whiskermenu-plugin xfce4-pulseaudio-plugin xfce4-genmon-plugin \
         mousepad ristretto tumbler adwaita-icon-theme \
         orchis-gtk-theme elementary-xfce-icon-theme \
-        firefox-esr && \
+        firefox-esr \
+        xdotool && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ═══════════════════════════════════════════════
