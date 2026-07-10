@@ -36,7 +36,7 @@
       <property name="icon-size" type="uint" value="48"/>
     </property>
     <property name="plugin-3" type="string" value="genmon">
-      <property name="command" type="string" value="$HOME/.arinanox/tools/genmon-rclick.sh"/>
+      <property name="command" type="string" value="/home/admin/.arinanox/tools/genmon-rclick.sh"/>
     </property>
   </property>
   <property name="configver" type="int" value="2"/>
