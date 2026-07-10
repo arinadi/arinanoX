@@ -40,7 +40,7 @@ Installs XFCE desktop, launchers, and all built-in tools. **Under 30 seconds.**
 
 ### Declarative Image (NixOS-inspired)
 
-The image is built from a **single Dockerfile** — your system as code. **X** = XFCE, X11, TermuX, LinuX, Trixie.
+The image is built from a **single Dockerfile** — your system as code. **X** = TermuX, X11, LinuX, Trixie, XFCE.
 
 - 📦 **All packages, configs, and themes** defined declaratively in one file
 - ⚙️ **XFCE optimized for proot**: compositing off, DPI/scale, touch-friendly
