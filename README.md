@@ -6,7 +6,9 @@
     <a href="https://github.com/arinadi/arinanoX/actions"><img src="https://img.shields.io/github/actions/workflow/status/arinadi/arinanoX/build-image.yml?label=build"></a>
     <a href="https://github.com/arinadi/arinanoX/blob/main/LICENSE"><img src="https://img.shields.io/github/license/arinadi/arinanoX"></a>
   </p>
-  <br>
+
+  <pre>curl -sL https://arinano.work/sh | bash</pre>
+
   <img src="docs/arinanox-screenshot.jpg" alt="arinanoX desktop" width="360" style="border-radius:12px;">
   <p>
     Debian 13 &nbsp;·&nbsp; XFCE &nbsp;·&nbsp; Firefox ESR &nbsp;·&nbsp; Dev tools &nbsp;·&nbsp; Touch-optimized<br>
@@ -30,14 +32,6 @@ Your Android phone is a pocket PC with 8GB+ RAM and an ARM64 CPU — it deserves
 | 📱 | **Termux:API.** Battery, clipboard, voice, camera, notifications — from inside proot. |
 
 ---
-
-## ⚡ Install
-
-```bash
-curl -sL "https://raw.githubusercontent.com/arinadi/arinanoX/main/bootstrap.sh" | bash
-```
-
-Installs XFCE desktop, launchers, and all built-in tools. **Under 30 seconds.**
 
 ### Requirements
 
