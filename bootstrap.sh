@@ -7,15 +7,15 @@ set -euo pipefail
 # ══════════════════════════════════════════
 
 REPO="https://raw.githubusercontent.com/arinadi/arinanoX/main"
-DROIDDESK_DIR="$HOME/.arinanox"
-SCRIPTS_DIR="${DROIDDESK_DIR}/scripts"
-LAUNCHERS_DIR="${DROIDDESK_DIR}/launchers"
+ARINANOX_DIR="$HOME/.arinanox"
+SCRIPTS_DIR="${ARINANOX_DIR}/scripts"
+LAUNCHERS_DIR="${ARINANOX_DIR}/launchers"
 
 # --- Detect state ---
 INSTALLED=false
-if [ -f "$DROIDDESK_DIR/version.txt" ]; then
+if [ -f "$ARINANOX_DIR/version.txt" ]; then
     INSTALLED=true
-    LOCAL_VER=$(cat "$DROIDDESK_DIR/version.txt" | tr -d '[:space:]')
+    LOCAL_VER=$(cat "$ARINANOX_DIR/version.txt" | tr -d '[:space:]')
 fi
 
 REMOTE_VER=$(curl -sL --retry 2 "${REPO}/version.txt" 2>/dev/null | tr -d '[:space:]')
@@ -99,7 +99,7 @@ fi
 # --- Install / Update ---
 if [ "$ACTION" = "install" ]; then
     echo ">>> Installing arinanoX v${REMOTE_VER}..."
-    rm -rf "$DROIDDESK_DIR"
+    rm -rf "$ARINANOX_DIR"
     mkdir -p "$SCRIPTS_DIR" "$LAUNCHERS_DIR"
 elif [ "$ACTION" = "update" ]; then
     echo ">>> Updating: v${LOCAL_VER} → v${REMOTE_VER}"
@@ -125,8 +125,8 @@ done
 
 # --- Download hardened API bridge ---
 echo ">>> Downloading API bridge..."
-curl -sL --retry 2 "${REPO}/run-api-bridge.sh" -o "${DROIDDESK_DIR}/run-api-bridge.sh"
-chmod +x "${DROIDDESK_DIR}/run-api-bridge.sh"
+curl -sL --retry 2 "${REPO}/run-api-bridge.sh" -o "${ARINANOX_DIR}/run-api-bridge.sh"
+chmod +x "${ARINANOX_DIR}/run-api-bridge.sh"
 
 # --- Execute Setup ---
 echo ""
@@ -150,7 +150,7 @@ echo ">>> Setting up MOTD..."
 bash "${SCRIPTS_DIR}/motd-setup.sh"
 
 # --- Save Version ---
-echo "$REMOTE_VER" > "$DROIDDESK_DIR/version.txt"
+echo "$REMOTE_VER" > "$ARINANOX_DIR/version.txt"
 
 echo ""
 echo "╔═══════════════════════════════════════╗"
