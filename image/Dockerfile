@@ -54,7 +54,7 @@ RUN printf '#!/bin/sh\nexit 1\n' > /usr/bin/pm-is-supported && chmod +x /usr/bin
 COPY configs-target/home/ /home/
 
 RUN chown -R admin:admin /home/admin && \
-    chmod +x /home/admin/.droiddesk/tools/*.sh && \
+    chmod +x /home/admin/.arinanox/tools/*.sh && \
     sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
