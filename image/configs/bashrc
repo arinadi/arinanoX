@@ -31,13 +31,13 @@ alias ports='ss -tlnp'
 alias myip='curl -s ifconfig.me && echo'
 
 # ──── DroidDesk TAPI utilities ────
-TAPI_UTILS="$HOME/.droiddesk/tools/tapi-utils.sh"
+TAPI_UTILS="$HOME/.arinanox/tools/tapi-utils.sh"
 if [ -f "$TAPI_UTILS" ]; then
     source "$TAPI_UTILS"
 fi
 
 # ──── Welcome ────
-if [ -f "$HOME/.droiddesk/tools/tapi-utils.sh" ]; then
+if [ -f "$HOME/.arinanox/tools/tapi-utils.sh" ]; then
     echo ""
     echo "╔═══════════════════════════════════╗"
     echo "║  📱 DroidDesk — Ready             ║"
