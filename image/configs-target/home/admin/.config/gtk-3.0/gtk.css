@@ -1,0 +1,46 @@
+/* ===============================================
+   DroidDesk — Touch-Friendly GTK Overrides
+   Larger scrollbars, bigger hit areas for mobile
+   =============================================== */
+
+/* --- Thicker scrollbars --- */
+scrollbar slider {
+    min-width: 14px;
+    min-height: 14px;
+    border-radius: 7px;
+}
+scrollbar.vertical slider { min-width: 14px; }
+scrollbar.horizontal slider { min-height: 14px; }
+
+/* --- Larger checkboxes & radio buttons --- */
+checkbutton check, radiobutton radio {
+    min-width: 22px;
+    min-height: 22px;
+}
+
+/* --- Bigger spinbutton arrows --- */
+spinbutton button {
+    min-width: 28px;
+    min-height: 28px;
+}
+
+/* --- Wider combo box dropdown arrows --- */
+combobox button {
+    min-width: 30px;
+}
+
+/* --- Increase separator/drag handles --- */
+paned separator {
+    min-width: 6px;
+    min-height: 6px;
+}
+
+/* --- Thunar sidebar padding --- */
+.thunar .sidebar .view {
+    padding: 4px;
+}
+
+/* --- Thunar icon view: more spacing --- */
+.thunar .standard-view .view {
+    padding: 6px;
+}

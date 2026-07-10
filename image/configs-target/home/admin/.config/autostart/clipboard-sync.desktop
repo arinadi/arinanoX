@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Clipboard Sync
+Comment=Sync Android and proot clipboards
+Exec=bash /home/admin/.droiddesk/tools/clipboard-sync.sh
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
