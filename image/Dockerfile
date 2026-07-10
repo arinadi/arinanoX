@@ -45,10 +45,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends firefox-esr && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# GUI apps
+# GUI apps + themes
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        mousepad ristretto tumbler && \ orchis-gtk-theme elementary-xfce-icon-theme
+        mousepad ristretto tumbler \
+        orchis-gtk-theme elementary-xfce-icon-theme && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Dev tools
