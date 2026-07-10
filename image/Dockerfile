@@ -27,6 +27,7 @@ RUN apt-get update && \
         orchis-gtk-theme elementary-xfce-icon-theme \
         firefox-esr \
         xdotool && \
+        yad \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ═══════════════════════════════════════════════

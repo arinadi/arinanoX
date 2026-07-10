@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=APT Store
+Comment=Lightweight package manager
+Icon=system-software-install
+Exec=/home/admin/.arinanox/tools/apt-store.sh
+Terminal=false
+Categories=System;PackageManager;
