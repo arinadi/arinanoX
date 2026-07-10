@@ -35,11 +35,31 @@ Installs XFCE desktop, launchers, and all built-in tools. **Under 30 seconds.**
 └─────────────────────────────────────┘
 ```
 
-**Two-layer architecture:**
-- **Image layer** (immutable) — Debian 13 ARM64, XFCE, Firefox ESR, dev tools. Pre-built on GHCR. Download once.
-- **User layer** (mutable) — Your packages via `patch.sh`, dotfiles, configs. Preserved across updates via auto backup/restore.
+### Declarative Image (NixOS-inspired)
 
-**Base:** Debian 13 (Trixie). Firefox ESR from native repos — zero external APT sources. **Update:** `bash ~/update.sh` pulls latest image, restores user layer.
+The image is built from a **single Dockerfile** — your system as code:
+
+- 📦 **All packages, configs, and themes** defined declaratively in one file
+- ⚙️ **XFCE optimized for proot**: compositing off, DPI/scale, touch-friendly
+- 🎨 **Orchis Material Design + elementary-hidpi icons** — baked in
+- 🎯 **Proot-aware**: systemd warnings suppressed, power daemon removed, dbus locked down
+- ⚡ **CI-built and deployed** to GHCR on every push
+
+**Silverblue-style atomic upgrades:** `bash ~/update.sh` renames the old deployment to `droiddesk-prev` before deploying the new image. Instant rollback: `bash ~/.droiddesk/scripts/proot-rollback.sh`.
+
+| Concept | NixOS | DroidDesk |
+|---------|-------|-----------|
+| System definition | `configuration.nix` | `image/Dockerfile` |
+| Packages | declarative list | `RUN apt-get install` |
+| Config files | `environment.etc` | `COPY configs/ → /home/admin` |
+| Reproducible | yes (closures) | yes (CI + GHCR) |
+| Atomic upgrades | generations | rename + rollback script |
+| Rollback | `nixos-rebuild switch --rollback` | `proot-rollback.sh` |
+| User overlays | home-manager | `patch.sh` (layers tracked) |
+
+**Base:** Debian 13 (Trixie). Firefox ESR from native repos — zero external APT sources.
+
+**Update:** `bash ~/update.sh` pulls latest GHCR image, re-deploys as new atomic generation.
 
 ---
 
@@ -50,12 +70,12 @@ Installs XFCE desktop, launchers, and all built-in tools. **Under 30 seconds.**
 | Category | Tools |
 |----------|-------|
 | 🌐 Browser | Firefox ESR |
-| 🖥️ Desktop | XFCE4 + Whisker Menu + Power Manager + PulseAudio tray |
+| 🖥️ Desktop | XFCE4 + Whisker Menu + PulseAudio tray |
 | 🖱️ Touch | Single-click Thunar, large scrollbars, clipboard auto-sync |
 | 📝 Apps | Mousepad (editor), Ristretto (images) |
 | 🔧 Dev | Git, Node.js 22 LTS, Python 3 (pip/venv/dev), GCC, Make, CMake |
 | 📊 Sys | htop, tmux, OpenSSH |
-| 🎨 Theme | Adwaita icons, Greybird, SVG support |
+| 🎨 Theme | Orchis-Dark (Material Design) + elementary-hidpi icons |
 
 ### Install more with patch
 
@@ -153,11 +173,13 @@ bash ~/.droiddesk/tools/genmon-volume.sh    # 🔊
 | Limitation | Workaround |
 |-----------|------------|
 | No root | proot provides root-like environment |
-| No systemd | Start services manually |
-| No GPU acceleration | Mesa software rendering |
+| No systemd | Start services manually; power-manager removed |
+| No GPU acceleration | Mesa software rendering; xfwm4 compositing off |
 | ARM64 only | QEMU user-mode for cross-arch |
 | No native X11 | Termux:X11 app |
 | Storage restrictions | `termux-setup-storage` |
+
+All warnings (systemd proxy, system bus, DPMS, GL renderer) are suppressed at the image layer — DroidDesk runs clean out of the box.
 
 **Cannot do:** Docker containers, GPU hardware access, systemd services, x86 natively.
 
@@ -175,11 +197,13 @@ bash ~/.droiddesk/tools/genmon-volume.sh    # 🔊
 ```
 DroidDesk/
 ├── bootstrap.sh          ← one-command entry point
-├── scripts/              ← setup, patch, config
+├── image/                ← 🎯 System definition (Dockerfile)
+│   ├── Dockerfile        ←    declarative: packages, configs, themes
+│   └── configs/          ←    XFCE, bash, GTK, autostart
+├── scripts/              ← setup, patch, theme, rollback
 ├── launchers/            ← start/kill/update shortcuts
-├── image/                ← Dockerfile + XFCE/TAPI configs
 ├── docs/                 ← documentation
-└── archive/              ← git history
+└── .github/workflows/    ← CI → GHCR image on push
 ```
 
 ---
