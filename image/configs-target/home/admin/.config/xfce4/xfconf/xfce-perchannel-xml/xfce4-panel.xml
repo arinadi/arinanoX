@@ -35,8 +35,10 @@
       <property name="grouping" type="uint" value="1"/>
       <property name="icon-size" type="uint" value="48"/>
     </property>
-    <property name="plugin-3" type="string" value="genmon">
-      <property name="command" type="string" value="/home/admin/.arinanox/tools/genmon-rclick.sh"/>
+    <property name="plugin-3" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="arinanox-rclick.desktop"/>
+      </property>
     </property>
   </property>
   <property name="configver" type="int" value="2"/>

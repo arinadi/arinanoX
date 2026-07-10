@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Right Click
+Comment=Trigger right-click at pointer position
+Icon=input-mouse
+Exec=xdotool click 3
+Categories=Utility;
