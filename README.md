@@ -248,3 +248,27 @@ arinanoX/
 ## 📜 License
 
 GPLv3
+
+## 🖱️ Touchscreen Right-Click
+
+arinanoX adds a **right-click button** to the XFCE panel via `xfce4-genmon-plugin`.
+
+```
+ Panel:  [ 🏠 Whisker ]  [ Firefox ] [ Terminal ] ...  [ 🖱️ R+ ]
+                                                          ↑ tap = right-click
+```
+
+No need to switch to trackpad mode. Tap `🖱️` → next tap anywhere = right-click.
+
+### Termux Extra Keys (optional)
+
+For keyboard shortcuts, customize `~/.termux/termux.properties`:
+
+```properties
+extra-keys = [ \
+ ['ESC','/',{key: '-', popup: '|'},'HOME','UP','END','PGUP','PREFERENCES'], \
+ ['TAB','CTRL','ALT','LEFT','DOWN','RIGHT','PGDN','KEYBOARD'] \
+]
+```
+
+Reload with `termux-reload-settings`.

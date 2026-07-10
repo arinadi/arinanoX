@@ -30,7 +30,7 @@ alias free='free -h'
 alias ports='ss -tlnp'
 alias myip='curl -s ifconfig.me && echo'
 
-# ──── DroidDesk TAPI utilities ────
+# ──── arinanoX TAPI utilities ────
 TAPI_UTILS="$HOME/.arinanox/tools/tapi-utils.sh"
 if [ -f "$TAPI_UTILS" ]; then
     source "$TAPI_UTILS"
@@ -40,7 +40,7 @@ fi
 if [ -f "$HOME/.arinanox/tools/tapi-utils.sh" ]; then
     echo ""
     echo "╔═══════════════════════════════════╗"
-    echo "║  📱 DroidDesk — Ready             ║"
+    echo "║  📱 arinanoX — Ready             ║"
     echo "╠═══════════════════════════════════╣"
     echo "║  battery       clipget / clipset  ║"
     echo "║  vol-up/down   bright 50          ║"

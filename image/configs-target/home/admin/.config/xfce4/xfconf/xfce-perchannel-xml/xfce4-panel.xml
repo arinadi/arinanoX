@@ -1,4 +1,5 @@
 <?xml version="1.1" encoding="UTF-8"?>
+
 <channel name="xfce4-panel" version="1.0">
   <property name="panels" type="array">
     <value type="int" value="1"/>
@@ -13,6 +14,7 @@
       <property name="plugin-ids" type="array">
         <value type="int" value="1"/>
         <value type="int" value="2"/>
+        <value type="int" value="3"/>
       </property>
     </property>
   </property>
@@ -23,11 +25,19 @@
       <property name="recent-items-max" type="int" value="5"/>
       <property name="view-mode" type="uint" value="1"/>
       <property name="open-at-mouse" type="bool" value="false"/>
+      <property name="recent" type="array">
+        <value type="string" value="xfce-workspaces-settings.desktop"/>
+        <value type="string" value="htop.desktop"/>
+      </property>
     </property>
     <property name="plugin-2" type="string" value="tasklist">
       <property name="show-labels" type="bool" value="false"/>
       <property name="grouping" type="uint" value="1"/>
       <property name="icon-size" type="uint" value="48"/>
     </property>
+    <property name="plugin-3" type="string" value="genmon">
+      <property name="command" type="string" value="$HOME/.arinanox/tools/genmon-rclick.sh"/>
+    </property>
   </property>
+  <property name="configver" type="int" value="2"/>
 </channel>
