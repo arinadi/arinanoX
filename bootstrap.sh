@@ -73,7 +73,8 @@ mkdir -p "$SCRIPTS_DIR" "$LAUNCHERS_DIR"
 for f in host-setup.sh proot-setup.sh api-bridge-setup.sh xfce-config.sh \
          launcher-gen.sh motd-setup.sh \
          proot-backup.sh proot-restore.sh \
-         patch.sh; do
+         proot-rollback.sh patch.sh \
+         theme-dark.sh status.sh; do
     curl -sL --retry 2 "${REPO}/scripts/${f}" -o "${SCRIPTS_DIR}/${f}"
     chmod +x "${SCRIPTS_DIR}/${f}"
 done
