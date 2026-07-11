@@ -34,8 +34,15 @@ echo "  ✓ X11 running"
 echo ">>> [4/4] Desktop..."
 VIRGL_MODE="cpu"
 
-# Try 1: ANGLE + Vulkan (best for Xclipse/Mali/Adreno with Vulkan)
-if command -v virgl_test_server &>/dev/null && [ -d "$ANGLE_DIR/vulkan" ]; then
+# Try 1: virglrenderer-android (native GLES, works best on most devices)
+if command -v virgl_test_server_android &>/dev/null; then
+    echo "  ✓ virglrenderer-android — starting GPU server..."
+    virgl_test_server_android &>/dev/null &
+    sleep 1
+    VIRGL_MODE="android"
+
+# Try 2: ANGLE + Vulkan (Xclipse/Mali with Vulkan, fallback)
+elif command -v virgl_test_server &>/dev/null && [ -d "$ANGLE_DIR/vulkan-null" ]; then
     # Ensure ANGLE lib symlinks exist
     for lib in libEGL_angle.so libGLESv1_CM_angle.so libGLESv2_angle.so; do
         base="${lib%_angle.so}"
@@ -45,10 +52,13 @@ if command -v virgl_test_server &>/dev/null && [ -d "$ANGLE_DIR/vulkan" ]; then
             ln -sf "${ANGLE_DIR}/vulkan/${lib}" "${ANGLE_DIR}/vulkan/${base}${so_ver}" 2>/dev/null || true
     done
 
-    echo "  ✓ ANGLE+vulkan path — starting GPU server..."
-    LD_LIBRARY_PATH="${ANGLE_DIR}/vulkan" virgl_test_server --use-egl-surfaceless --use-gles &>/dev/null &
+    echo "  ✓ ANGLE+vulkan-null path — starting GPU server..."
+    LD_LIBRARY_PATH="${ANGLE_DIR}/vulkan-null" virgl_test_server --use-egl-surfaceless --use-gles &>/dev/null &
     sleep 1
-    VIRGL_MODE="angle-vulkan"
+    VIRGL_MODE="angle-vulkan-null"
+
+# Try 3: ANGLE + Vulkan (direct)
+elif command -v virgl_test_server &>/dev/null && [ -d "$ANGLE_DIR/vulkan" ]; then
 
 # Try 2: virglrenderer-android (native GLES, Snapdragon Adreno)
 elif command -v virgl_test_server_android &>/dev/null; then
@@ -63,7 +73,7 @@ fi
 
 # ── XFCE Desktop ────────────────────────────────────────────
 case "$VIRGL_MODE" in
-    angle-vulkan|android)
+    angle-vulkan-null|angle-vulkan|android)
         echo "  ✓ Launching XFCE with GPU (${VIRGL_MODE})..."
         proot-distro login arinanox --shared-tmp -- su - admin -c "
             export DISPLAY=:0
