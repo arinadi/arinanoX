@@ -15,6 +15,9 @@
         <value type="int" value="1"/>
         <value type="int" value="2"/>
       </property>
+      <property name="border-width" type="uint" value="10"/>
+      <property name="enable-struts" type="bool" value="false"/>
+      <property name="autohide-behavior" type="uint" value="1"/>
     </property>
   </property>
   <property name="plugins" type="empty">
@@ -22,12 +25,16 @@
       <property name="show-menu-icons" type="bool" value="true"/>
       <property name="show-generic-names" type="bool" value="false"/>
       <property name="recent-items-max" type="int" value="5"/>
-      <property name="view-mode" type="uint" value="1"/>
+      <property name="view-mode" type="int" value="2"/>
       <property name="open-at-mouse" type="bool" value="false"/>
       <property name="recent" type="array">
-        <value type="string" value="xfce-workspaces-settings.desktop"/>
-        <value type="string" value="htop.desktop"/>
+        <value type="string" value="xfce-mouse-settings.desktop"/>
+        <value type="string" value="panel-preferences.desktop"/>
       </property>
+      <property name="button-icon" type="string" value="distributor-logo-xfce"/>
+      <property name="show-command-lockscreen" type="bool" value="false"/>
+      <property name="default-category" type="int" value="1"/>
+      <property name="hover-switch-category" type="bool" value="true"/>
     </property>
     <property name="plugin-2" type="string" value="tasklist">
       <property name="show-labels" type="bool" value="false"/>
