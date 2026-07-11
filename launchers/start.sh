@@ -1,67 +1,71 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ═══════════════════════════════════════════════════════════════
 # arinanoX — Start (unified launcher)
-#  PulseAudio → X11 → virgl (auto) → XFCE desktop
+#  Parallel: PulseAudio + virgl + X11 → XFCE desktop
 # ═══════════════════════════════════════════════════════════════
 set -euo pipefail
 
-TERMUX_TMP="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
+TMPDIR="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
 ANGLE_DIR="/data/data/com.termux/files/usr/opt/angle-android"
+X11_SOCK="${TMPDIR}/.X11-unix/X0"
 
-# ── PulseAudio ──────────────────────────────────────────────
-echo ">>> [1/4] PulseAudio..."
-pulseaudio --start --exit-idle-time=-1
-pactl load-module module-aaudio-sink 2>/dev/null || pactl load-module module-sles-sink 2>/dev/null || true
-pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 port=4713 2>/dev/null || true
-echo "  ✓ PulseAudio ready"
+# ── [1/3] Start all services in parallel ────────────────────
+echo ">>> [1/3] Starting services..."
 
-# ── Termux:API Bridge ───────────────────────────────────────
-echo ">>> [2/4] Termux:API Bridge..."
-termux-wake-lock
+# PulseAudio
+pulseaudio --start --exit-idle-time=-1 2>/dev/null &
+PA_PID=$!
+pactl load-module module-aaudio-sink 2>/dev/null || \
+pactl load-module module-sles-sink 2>/dev/null || true
+pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 \
+    auth-anonymous=1 port=4713 2>/dev/null || true
+
+# API Bridge
 pkill -f run-api-bridge.sh 2>/dev/null || true
-bash ~/run-api-bridge.sh > /dev/null 2>&1 &
-echo "  ✓ API bridge started"
+bash ~/run-api-bridge.sh &>/dev/null &
 
-# ── Termux:X11 ──────────────────────────────────────────────
-echo ">>> [3/4] X11 Server..."
-export XDG_RUNTIME_DIR="$TERMUX_TMP"
-termux-x11 :0 -ac &
-sleep 2
-am start -n com.termux.x11/com.termux.x11.MainActivity 2>/dev/null || true
-echo "  ✓ X11 running"
-
-# ── virgl GPU (auto-detect best path) ───────────────────────
-echo ">>> [4/4] Desktop..."
+# virgl (auto-detect) — start in background
 VIRGL_MODE="cpu"
-
-# 1: android (native GLES) — best for most devices
 if command -v virgl_test_server_android &>/dev/null; then
-    echo "  ✓ android GPU — starting server..."
     virgl_test_server_android &>/dev/null &
-    sleep 1
     VIRGL_MODE="android"
-
-# 2: angle + vulkan-null (faster passthrough)
 elif command -v virgl_test_server &>/dev/null && [ -d "${ANGLE_DIR}/vulkan-null" ]; then
-    echo "  ✓ ANGLE+vulkan-null — starting server..."
-    LD_LIBRARY_PATH="${ANGLE_DIR}/vulkan-null" virgl_test_server --use-egl-surfaceless --use-gles &>/dev/null &
-    sleep 1
+    LD_LIBRARY_PATH="${ANGLE_DIR}/vulkan-null" \
+        virgl_test_server --use-egl-surfaceless --use-gles &>/dev/null &
     VIRGL_MODE="angle-vulkan-null"
-
-# 3: angle + vulkan (full translation)
 elif command -v virgl_test_server &>/dev/null && [ -d "${ANGLE_DIR}/vulkan" ]; then
-    echo "  ✓ ANGLE+vulkan — starting server..."
-    LD_LIBRARY_PATH="${ANGLE_DIR}/vulkan" virgl_test_server --use-egl-surfaceless --use-gles &>/dev/null &
-    sleep 1
+    LD_LIBRARY_PATH="${ANGLE_DIR}/vulkan" \
+        virgl_test_server --use-egl-surfaceless --use-gles &>/dev/null &
     VIRGL_MODE="angle-vulkan"
-
-else
-    echo "  • no GPU server available (CPU rendering)"
 fi
 
-# ── XFCE Desktop ────────────────────────────────────────────
+# X11
+export XDG_RUNTIME_DIR="$TMPDIR"
+termux-x11 :0 -ac &
+X11_PID=$!
+
+# Wake lock
+termux-wake-lock
+
+# Switch to X11 app (background — don't block)
+am start -n com.termux.x11/com.termux.x11.MainActivity &>/dev/null &
+
+echo "  PulseAudio + API + virgl($VIRGL_MODE) + X11 started"
+
+# ── [2/3] Wait for X11 socket ───────────────────────────────
+echo ">>> [2/3] Waiting for X11..."
+for i in $(seq 1 30); do
+    [ -S "$X11_SOCK" ] && break
+    sleep 0.1
+done
+[ -S "$X11_SOCK" ] && echo "  ✓ X11 ready ($(busybox expr $i \* 100)ms)" || \
+    echo "  ⚠ X11 socket timeout, proceeding anyway..."
+
+# ── [3/3] XFCE Desktop ──────────────────────────────────────
+echo ">>> [3/3] Launching desktop..."
+
 if [ "$VIRGL_MODE" != "cpu" ]; then
-    echo "  ✓ Launching XFCE with GPU (${VIRGL_MODE})..."
+    echo "  ✓ GPU mode: ${VIRGL_MODE}"
     proot-distro login arinanox --shared-tmp -- su - admin -c "
         export DISPLAY=:0
         export PULSE_SERVER=tcp:127.0.0.1:4713
@@ -75,7 +79,7 @@ if [ "$VIRGL_MODE" != "cpu" ]; then
         dbus-launch --exit-with-session xfce4-session
     "
 else
-    echo "  ✓ Launching XFCE (CPU rendering)..."
+    echo "  • CPU mode"
     proot-distro login arinanox --shared-tmp -- su - admin -c "
         export DISPLAY=:0
         export PULSE_SERVER=tcp:127.0.0.1:4713
