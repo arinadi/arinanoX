@@ -66,7 +66,7 @@ The image is built from a **single Dockerfile** — your system as code.
 - 🎯 **Proot-aware**: systemd warnings suppressed, power daemon removed, dbus locked down
 - ⚡ **CI-built and deployed** to GHCR on every push
 
-**Silverblue-style atomic upgrades:** `bash ~/update.sh` renames the old deployment to `arinanox-prev` before deploying the new image. Instant rollback: `bash ~/.arinanox/scripts/proot-rollback.sh`.
+**Silverblue-style atomic upgrades:** `bash ~/.arinanox/scripts/proot-setup.sh` renames the old deployment to `arinanox-prev` before deploying the new image. Instant rollback: `bash ~/.arinanox/scripts/proot-rollback.sh`.
 
 | Concept | NixOS | arinanoX |
 |---------|-------|-----------|
@@ -76,11 +76,9 @@ The image is built from a **single Dockerfile** — your system as code.
 | Reproducible | yes (closures) | yes (CI + GHCR) |
 | Atomic upgrades | generations | rename + rollback script |
 | Rollback | `nixos-rebuild switch --rollback` | `proot-rollback.sh` |
-| User overlays | home-manager | `patch.sh` (layers tracked) |
+| User overlays | home-manager | `apt-store.sh` / `patch.sh` |
 
 **Base:** Debian 13 (Trixie). Firefox ESR from native repos — zero external APT sources.
-
-**Update:** `bash ~/update.sh` pulls latest GHCR image, re-deploys as new atomic generation.
 
 ### Prebuilt vs DIY
 
@@ -94,7 +92,7 @@ The image is built from a **single Dockerfile** — your system as code.
 | Proot fixes | compositing off, warnings suppressed, power removed | trial-and-error |
 | TAPI utilities | included | must copy + configure |
 | Rollback | atomic (rename) | manual backup/restore |
-| Updates | `2-update-arinanox.sh` (30s) | re-do everything |
+| Updates | `curl bootstrap.sh \| bash` (30s) | re-do everything |
 
 **Why prebuilt?** The Dockerfile does 30 minutes of apt installs, config tweaks, and proot optimizations so you skip straight to a working desktop.
 
@@ -114,12 +112,20 @@ The image is built from a **single Dockerfile** — your system as code.
 | 📊 Sys | htop, tmux, OpenSSH |
 | 🎨 Theme | Orchis-Dark (Material Design) + elementary-hidpi icons |
 
-### Install more with patch
+### Install more with APT Store
+
+Launch **APT Store** from Whisker Menu → System, or:
 
 ```bash
-bash ~/.arinanox/scripts/patch.sh                    # Interactive
+bash ~/.arinanox/tools/apt-store.sh
+```
+
+Quick-add repos for VS Code, Firefox, Docker, OpenJDK right from the GUI.
+
+### CLI extras (patch.sh)
+
+```bash
 bash ~/.arinanox/scripts/patch.sh --chromium --code --zsh
-bash ~/.arinanox/scripts/patch.sh --list
 ```
 
 | Category | Packages |
@@ -142,11 +148,12 @@ bash ~/stop.sh     # Stop everything
 
 ### 🎮 GPU Acceleration (virglrenderer)
 
-arinanoX auto-detects `virglrenderer-android`. Install once:
+arinanoX auto-detects the best GPU path (3-tier):
 
-```bash
-pkg install virglrenderer-android
-# → restart ~/start.sh  (now with GPU)
+```
+1. android         → virgl_test_server_android      (native GLES)
+2. angle-vulkan-null → virgl + ANGLE passthrough    (Vulkan GPUs)
+3. CPU fallback    → LIBGL_ALWAYS_SOFTWARE=1
 ```
 
 | Mode | Env | Performance |
@@ -196,13 +203,6 @@ curl -sL https://raw.githubusercontent.com/arinadi/arinanoX/main/bootstrap.sh | 
 | `whereami` / `wifi` | GPS / WiFi |
 | `photo` / `flash` | Camera / flashlight |
 
-### Panel Widgets (Whisker Menu → Panel → Add → Generic Monitor)
-
-```
-bash ~/.arinanox/tools/genmon-battery.sh   # 🔋
-bash ~/.arinanox/tools/genmon-volume.sh    # 🔊
-```
-
 ---
 
 ## 💡 Why arinanoX?
@@ -223,14 +223,14 @@ bash ~/.arinanox/tools/genmon-volume.sh    # 🔊
 |-----------|------------|
 | No root | proot provides root-like environment |
 | No systemd | Start services manually; power-manager removed |
-| No GPU acceleration | Mesa software rendering; xfwm4 compositing off |
+| No GPU | virglrenderer auto-detected (3-tier: android → angle → CPU) |
 | ARM64 only | QEMU user-mode for cross-arch |
 | No native X11 | Termux:X11 app |
 | Storage restrictions | `termux-setup-storage` |
 
 All warnings (systemd proxy, system bus, DPMS, GL renderer) are suppressed at the declarative layer — arinanoX runs clean out of the box.
 
-**Cannot do:** Docker containers, GPU hardware access, systemd services, x86 natively.
+**Cannot do:** Docker containers, systemd services, x86 natively.
 
 ---
 
@@ -248,9 +248,9 @@ arinanoX/
 ├── bootstrap.sh          ← one-command entry point
 ├── image/                ← 🎯 System definition (Dockerfile)
 │   ├── Dockerfile        ←    declarative: packages, configs, themes
-│   └── configs/          ←    XFCE, bash, GTK, autostart
-├── scripts/              ← setup, patch, theme, rollback
-├── launchers/            ← start/kill/update shortcuts
+│   └── configs-target/    ←    XFCE, bash, GTK, autostart
+├── scripts/              ← setup, patch, rollback, status
+├── launchers/            ← start/stop shortcuts
 ├── docs/                 ← documentation
 └── .github/workflows/    ← CI → GHCR image on push
 ```
@@ -261,12 +261,9 @@ arinanoX/
 
 ## 🖱️ Right-Click on Touchscreen
 
-Trackpad mode is recommended. For right-click without switching modes:
+`Ctrl+Alt+R` triggers right-click via xdotool (auto-installed).
 
-1. `Ctrl+Alt+R` triggers right-click at pointer (via xdotool)
-2. Add a button to Termux Extra Keys:
-
-`~/.termux/termux.properties`:
+Add to `~/.termux/termux.properties`:
 ```properties
 extra-keys = [ \
  ['ESC','/',{key: '-', popup: '|'},'HOME','UP','END','PGUP',{macro: "CTRL ALT r", display: "🖱️R"}], \
