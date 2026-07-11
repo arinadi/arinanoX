@@ -95,7 +95,7 @@ The script will:
 After installation completes:
 
 ```bash
-bash ~/start-x11.sh
+bash ~/start.sh
 ```
 
 Then open the Termux-X11 app on your phone. Your desktop is ready.
@@ -168,7 +168,7 @@ Add this line:
 
 | Command | What It Does |
 |---|---|
-| `bash ~/start-x11.sh` | Start desktop via Termux-X11 |
+| `bash ~/start.sh` | Start desktop via Termux-X11 |
 | `bash ~/start-vnc.sh` | Start desktop via VNC (if installed) |
 | `bash ~/start-proot.sh` | Open Proot Linux shell |
 | `bash ~/proot-menu-sync.sh` | Sync Proot apps to desktop menu |

@@ -51,7 +51,7 @@ The bridge consists of two parts:
 
 ### Troubleshooting
 If `tapi` hangs or fails:
-1.  Ensure you started X11 via `bash ~/start-x11.sh` (which starts the bridge).
+1.  Ensure you started X11 via `bash ~/start.sh` (which starts the bridge).
 2.  Check if `netcat-openbsd` is installed on both Host and Guest.
 3.  Restart the bridge: `pkill -f run-api-bridge.sh && bash ~/run-api-bridge.sh &`.
 

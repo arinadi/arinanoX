@@ -26,4 +26,4 @@ fi
 mv "${CONTAINERS_DIR}/${PREV_CONTAINER}" "${CONTAINERS_DIR}/${CONTAINER}"
 
 echo ">>> Rollback complete. Previous deployment restored."
-echo ">>> Start XFCE: bash ~/start-xfce.sh"
+echo ">>> Run: bash ~/start.sh"

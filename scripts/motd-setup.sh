@@ -10,15 +10,11 @@ cat > /data/data/com.termux/files/usr/etc/motd << 'MOTDEOF'
 ==========================================
 
  Start:
-   1. bash ~/start-x11.sh
-   2. Open Termux:X11 app
-   3. bash ~/start-xfce.sh  (in new tab)
+    bash ~/start.sh
 
  Stop/Update:
-    bash ~/kill-all.sh         (stop ALL)
-    bash ~/kill-proot.sh       (stop XFCE only)
-    bash ~/kill-x11.sh         (stop X11/Audio only)
-    bash ~/update.sh           (update arinanoX)
+    bash ~/stop.sh
+    bash ~/update.sh
 
  User: admin / Pass: admin
 ==========================================

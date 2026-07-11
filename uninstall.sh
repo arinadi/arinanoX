@@ -47,22 +47,12 @@ fi
 if proot-distro list 2>/dev/null | grep -q "arinanox-prev"; then
     proot-distro remove arinanox-prev 2>&1 && echo "  [x] arinanox-prev removed" || echo "  [-] Failed to remove"
 fi
-# Legacy ubuntu container
-if proot-distro list 2>/dev/null | grep -q "ubuntu"; then
-    proot-distro remove ubuntu 2>&1 && echo "  [x] ubuntu removed" || echo "  [-] Failed to remove"
-fi
-else
-    echo "  [-] No proot container found"
-fi
 
 # 3. Remove launcher scripts
 echo ""
 echo ">>> Removing launcher scripts..."
-rm -f ~/.shortcuts/start-x11.sh \
-      ~/.shortcuts/start-xfce.sh \
-      ~/.shortcuts/kill-x11.sh \
-      ~/.shortcuts/kill-proot.sh \
-      ~/.shortcuts/kill-all.sh \
+rm -f ~/.shortcuts/start.sh \
+      ~/.shortcuts/stop.sh \
       ~/.shortcuts/update.sh \
       ~/.shortcuts/update-arinanox.sh
 echo "  [x] ~/.shortcuts/ cleaned"
@@ -70,11 +60,8 @@ echo "  [x] ~/.shortcuts/ cleaned"
 # 4. Remove home symlinks
 echo ""
 echo ">>> Removing home symlinks..."
-rm -f ~/start-x11.sh \
-      ~/start-xfce.sh \
-      ~/kill-x11.sh \
-      ~/kill-proot.sh \
-      ~/kill-all.sh \
+rm -f ~/start.sh \
+      ~/stop.sh \
       ~/update.sh \
       ~/update-arinanox.sh
 echo "  [x] Home symlinks removed"

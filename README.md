@@ -136,21 +136,31 @@ bash ~/.arinanox/scripts/patch.sh --list
 ## 🚀 Start / Stop / Update
 
 ```bash
-bash ~/start-x11.sh    # X11 server + PulseAudio
-# → Open Termux:X11 app
-bash ~/start-xfce.sh   # XFCE desktop
-
-bash ~/kill-all.sh     # Stop everything
-bash ~/update.sh       # Update arinanoX
+bash ~/start.sh    # PulseAudio → X11 → virgl(?) → XFCE (one command)
+bash ~/stop.sh     # Stop everything
+bash ~/update.sh   # Update arinanoX
 ```
+
+### 🎮 GPU Acceleration (virglrenderer)
+
+arinanoX auto-detects `virglrenderer-android`. Install once:
+
+```bash
+pkg install virglrenderer-android
+# → restart ~/start.sh  (now with GPU)
+```
+
+| Mode | Env | Performance |
+|------|-----|-------------|
+| GPU (virgl) | `GALLIUM_DRIVER=virpipe` | 4K video, 3D games |
+| CPU (fallback) | `LIBGL_ALWAYS_SOFTWARE=1` | Desktop only |
 
 ### 📱 Termux:Widget (1-tap launchers)
 
 | Shortcut | Action |
 |----------|--------|
-| 🟢 `start-x11.sh` | X11 + audio |
-| 🟢 `start-xfce.sh` | Desktop |
-| 🔴 `kill-all.sh` | Stop all |
+| 🟢 `start.sh` | Full startup |
+| 🔴 `stop.sh` | Full stop |
 | 🔄 `update.sh` | Update |
 
 ---
@@ -161,9 +171,8 @@ bash ~/update.sh       # Update arinanoX
 
 | Command | Action |
 |---------|--------|
-| `bash ~/start-x11.sh` | Start X11 + PulseAudio |
-| `bash ~/start-xfce.sh` | Start XFCE desktop |
-| `bash ~/kill-all.sh` | Stop everything |
+| `bash ~/start.sh` | Start desktop (auto GPU) |
+| `bash ~/stop.sh` | Stop everything |
 | `bash ~/update.sh` | Update |
 | `bash ~/.arinanox/scripts/patch.sh` | Install software |
 

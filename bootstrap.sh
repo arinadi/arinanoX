@@ -74,13 +74,13 @@ for f in host-setup.sh proot-setup.sh api-bridge-setup.sh xfce-config.sh \
          launcher-gen.sh motd-setup.sh \
          proot-backup.sh proot-restore.sh \
          proot-rollback.sh patch.sh \
-         theme-dark.sh status.sh; do
+         status.sh; do
     curl -sL --retry 2 "${REPO}/scripts/${f}" -o "${SCRIPTS_DIR}/${f}"
     chmod +x "${SCRIPTS_DIR}/${f}"
 done
 
 echo ">>> Downloading launchers..."
-for f in start-x11.sh start-xfce.sh kill-x11.sh kill-proot.sh kill-all.sh update.sh; do
+for f in start.sh stop.sh update.sh; do
     curl -sL --retry 2 "${REPO}/launchers/${f}" -o "${LAUNCHERS_DIR}/${f}"
     chmod +x "${LAUNCHERS_DIR}/${f}"
 done
@@ -109,9 +109,7 @@ echo ""
 echo "╔═══════════════════════════════════════╗"
 echo "║  ✅ arinanoX ready!                  ║"
 echo "╠═══════════════════════════════════════╣"
-echo "║  Start:                               ║"
-echo "║    bash ~/start-x11.sh                ║"
-echo "║    bash ~/start-xfce.sh               ║"
-echo "║  Stop:  bash ~/kill-all.sh            ║"
+echo "║  Start:  bash ~/start.sh            ║"
+echo "║  Stop:   bash ~/stop.sh             ║"
 echo "║  Update: bash ~/update.sh             ║"
 echo "╚═══════════════════════════════════════╝"

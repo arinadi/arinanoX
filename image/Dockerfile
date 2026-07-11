@@ -26,6 +26,7 @@ RUN apt-get update && \
         mousepad ristretto tumbler adwaita-icon-theme \
         orchis-gtk-theme elementary-xfce-icon-theme \
         firefox-esr \
+        mesa-utils \
         xdotool \
         gnupg \
         yad && \

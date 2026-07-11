@@ -8,8 +8,8 @@ arinanoX runs XFCE4 desktop inside a Debian 13 proot container on Android/Termux
 Display: Termux:X11 app (termux-x11 nighty). Audio: PulseAudio TCP bridge.
 
 Launch flow:
-  1. bash ~/start-x11.sh   → PulseAudio + termux-x11 :0 + API bridge
-  2. bash ~/start-xfce.sh  → proot-distro login + dbus-launch startxfce4
+  1. bash ~/start.sh   → PulseAudio + termux-x11 :0 + API bridge
+  2. bash ~/start.sh  → proot-distro login + dbus-launch startxfce4
 
 ## Symptoms
 
@@ -20,10 +20,10 @@ Launch flow:
 
 ## Key scripts (refer to arinanoX repo)
 
-launchers/start-x11.sh    — starts pulseaudio, loads TCP module, termux-x11 :0
-launchers/start-xfce.sh   — proot login, binds X11 socket, dbus-launch startxfce4
-launchers/kill-x11.sh     — kills X11 and DELETES .X11-unix/ directory
-launchers/kill-proot.sh   — kills XFCE, cleans ICEauthority, sessions cache
+launchers/start.sh    — starts pulseaudio, loads TCP module, termux-x11 :0
+launchers/start.sh   — proot login, binds X11 socket, dbus-launch startxfce4
+launchers/stop.sh     — kills X11 and DELETES .X11-unix/ directory
+launchers/stop.sh   — kills XFCE, cleans ICEauthority, sessions cache
 
 ## Dockerfile (image layer)
 
