@@ -10,11 +10,13 @@ cat > /data/data/com.termux/files/usr/etc/motd << 'MOTDEOF'
 ==========================================
 
  Start:
-    bash ~/start.sh  (widget: 1-start)
+    bash ~/start.sh
+ Stop:
+    bash ~/stop.sh
 
- Stop/Update:
-    bash ~/stop.sh   (widget: 0-stop)
-    bash ~/update.sh (widget: 2-update)
+ ⚠ Update (fresh install, wipes config):
+    curl -sL URL/bootstrap.sh | bash
+    See README for details.
 
  User: admin / Pass: admin
 ==========================================

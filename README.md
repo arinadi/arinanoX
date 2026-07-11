@@ -133,12 +133,11 @@ bash ~/.arinanox/scripts/patch.sh --list
 
 ---
 
-## 🚀 Start / Stop / Update
+## 🚀 Start / Stop
 
 ```bash
 bash ~/start.sh    # PulseAudio → X11 → virgl(?) → XFCE (one command)
 bash ~/stop.sh     # Stop everything
-bash ~/update.sh   # Update arinanoX
 ```
 
 ### 🎮 GPU Acceleration (virglrenderer)
@@ -161,7 +160,13 @@ pkg install virglrenderer-android
 |----------|--------|
 | 🟢 `1-start-arinanox.sh` | Full startup |
 | 🔴 `0-stop-arinanox.sh` | Full stop |
-| 🔄 `2-update-arinanox.sh` | Update |
+
+### 🔄 Update (⚠️ fresh install — resets user config!)
+
+```bash
+# Back up configs first, then:
+curl -sL https://raw.githubusercontent.com/arinadi/arinanoX/main/bootstrap.sh | bash
+```
 
 ---
 
@@ -173,8 +178,6 @@ pkg install virglrenderer-android
 |---------|--------|
 | `bash ~/start.sh` | Start desktop (auto GPU) |
 | `bash ~/stop.sh` | Stop everything |
-| `bash ~/update.sh` | Update |
-| `bash ~/.arinanox/scripts/patch.sh` | Install software |
 
 ### Termux:API (inside proot terminal)
 
