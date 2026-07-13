@@ -1,6 +1,6 @@
 <div align="center">
   <h1>📱 arinanoX</h1>
-  <p><strong>Your phone is a Linux workstation — in 30 seconds.</strong></p>
+  <p><strong>Your phone is a Linux workstation — ~30s to a working desktop, not 30 minutes of apt.</strong></p>
   <p>
     <a href="https://arinano.work"><img src="https://img.shields.io/badge/site-arinano.work-blue"></a>
     <a href="https://github.com/arinadi/arinanoX/actions"><img src="https://img.shields.io/github/actions/workflow/status/arinadi/arinanoX/build-image.yml?label=build"></a>
@@ -22,7 +22,7 @@ curl -sL https://raw.githubusercontent.com/arinadi/arinanoX/main/bootstrap.sh | 
 
 ## ⚡ Why
 
-Your Android phone is a pocket PC with 8GB+ RAM and an ARM64 CPU — it deserves a real desktop.
+Your Android phone is a pocket PC with 8GB+ RAM and an ARM64 CPU — it deserves a real desktop. If you've already fought your way through a manual proot install, you know where the pain is. arinanoX fixes it declaratively:
 
 | Problem | arinanoX Solution |
 |---------|-------------------|
@@ -31,16 +31,10 @@ Your Android phone is a pocket PC with 8GB+ RAM and an ARM64 CPU — it deserves
 | No dev tools | Node.js 22, Python 3, GCC, CMake built-in |
 | Background killed | Termux:WakeLock keeps sessions alive |
 | No clipboard bridge | Auto-sync Android ↔ proot |
+| 30 min of apt + theme + GTK tweaks | Prebuilt image, ~580MB, extract and run |
+| No rollback if update breaks | Atomic image swap, instant revert |
 
-| Feature | arinanoX |
-|---------|----------|
-| 🏗️ | **Declarative.** A single Dockerfile defines the entire system. Like NixOS, but on Debian. |
-| ⚡ | **Prebuilt.** 580MB image from CI. Extract and run — 30 seconds. No 30-minute apt wait. |
-| 🔄 | **Atomic.** Updates to a fresh image. Old one kept as `arinanox-prev`. Instant rollback. |
-| 🎯 | **Proot-aware.** Compositing off, power daemon removed, all systemd warnings suppressed. |
-| 🎨 | **Orchis Material Design + elementary-hidpi icons.** Dark, touch-friendly, baked in. |
-| 📱 | **Termux:API.** Battery, clipboard, voice, camera, notifications — from inside proot. |
-| 🤖 | **AI Stack.** Pi, lean-ctx, ddg_search, playwright-cli pre-installed. |
+**What this can't do:** no Docker, no systemd services, no native x86, no root (proot emulates root-like behavior, not real root). Full details in [Limitations](#️-limitations) — read that before you invest time installing.
 
 ---
 
@@ -67,13 +61,13 @@ Your Android phone is a pocket PC with 8GB+ RAM and an ARM64 CPU — it deserves
 
 ### Declarative Image (NixOS-inspired)
 
-The image is built from a **single Dockerfile** — your system as code.
+The image is built from a **single Dockerfile** — your system as code, not a sequence of manual steps you have to remember and redo.
 
 - 📦 **All packages, configs, and themes** defined declaratively in one file
 - ⚙️ **XFCE optimized for proot**: compositing off, DPI/scale, touch-friendly
 - 🎨 **Orchis Material Design + elementary-hidpi icons** — baked in
-- 🎯 **Proot-aware**: systemd warnings suppressed, power daemon removed, dbus locked down
-- ⚡ **CI-built and deployed** to GHCR on every push
+- 🎯 **Proot-aware**: systemd warnings suppressed, power daemon removed, dbus locked down (mechanism detailed in [Protection Layers](#️-preventive-measures) below)
+- ⚡ **CI-built and deployed** to GHCR on every push — image is exactly what's in the Dockerfile, every time
 
 **Silverblue-style atomic upgrades:** `bash ~/.arinanox/scripts/proot-setup.sh` renames the old deployment to `arinanox-prev` before deploying the new image. Instant rollback: `bash ~/.arinanox/scripts/proot-rollback.sh`.
 
@@ -91,19 +85,19 @@ The image is built from a **single Dockerfile** — your system as code.
 
 ### Prebuilt vs DIY
 
+If you've done the manual route before, this is the actual delta:
+
 | | arinanoX (prebuilt) | DIY (manual install) |
 |---|---|---|
-| Download | **~580 MB** (1 image) | ~450 MB (base distro) + packages |
-| Install time | **~30s** (extract + setup) | **20-30 min** (apt + config + theme) |
+| Download | ~580 MB (1 image) | ~450 MB (base distro) + packages |
+| Install time | ~30s on decent connection/storage — extract + setup, no compiling | 20–30 min (apt + config + theme) |
 | XFCE desktop | configured, ready | must install + configure |
 | Orchis theme | baked-in | manual install + set |
 | Touch-friendly | scrollbars, single-click, scale 2x | manual GTK config |
-| Proot fixes | compositing off, warnings suppressed, power removed | trial-and-error |
-| TAPI utilities | included | must copy + configure |
+| Proot fixes | compositing off, warnings suppressed, power daemon removed | trial-and-error |
+| Termux:API utilities | included | must copy + configure |
 | Rollback | atomic (rename) | manual backup/restore |
-| Updates | `curl bootstrap.sh \| bash` (30s) | re-do everything |
-
-**Why prebuilt?** The Dockerfile does 30 minutes of apt installs, config tweaks, and proot optimizations so you skip straight to a working desktop.
+| Updates | `curl bootstrap.sh \| bash` (~30s) | re-do everything |
 
 ---
 
@@ -124,6 +118,8 @@ The image is built from a **single Dockerfile** — your system as code.
 
 ### AI Stack (pre-installed)
 
+Chosen for ARM64/proot: no heavy runtime deps, no GPU requirement, small enough to run comfortably alongside XFCE on a phone.
+
 | Tool | Version | Function |
 |------|---------|----------|
 | [Pi](https://github.com/earendil-works/pi-coding-agent) | 0.80.6 | Agent orchestration (loop, tool-calling, LLM API) |
@@ -132,8 +128,7 @@ The image is built from a **single Dockerfile** — your system as code.
 | [playwright-cli](https://playwright.dev/agent-cli/) | 0.1.17 | Browser automation (Playwright Firefox 152.0.4) |
 | DeepSeek API | — | Model provider (V4 Chat, 1M context) — config `~/.pi/agent/models.json` |
 
-All tools are installed **natively inside proot** (not via Termux bind-mount).  
-See `docs/plan-ai-stack.md` for detailed setup and architecture.
+All tools are installed **natively inside proot** (not via Termux bind-mount) — see the bind-mount pitfall explained in [Preventive Measures](#️-preventive-measures) for why that distinction matters. Full setup/architecture in `docs/plan-ai-stack.md`.
 
 ### Install more with APT Store
 
@@ -143,7 +138,7 @@ Launch **APT Store** from Whisker Menu → System, or:
 bash ~/.arinanox/tools/apt-store.sh
 ```
 
-Quick-add repos for VS Code, Firefox, Docker, OpenJDK right from the GUI.
+Quick-add repos for VS Code, Firefox, Docker CLI (client only — see Limitations), OpenJDK right from the GUI.
 
 ### CLI extras (patch.sh)
 
@@ -181,9 +176,9 @@ arinanox help         # All commands
 arinanoX auto-detects the best GPU path (3-tier):
 
 ```
-1. android         → virgl_test_server_android      (native GLES)
-2. angle-vulkan-null → virgl + ANGLE passthrough    (Vulkan GPUs)
-3. CPU fallback    → LIBGL_ALWAYS_SOFTWARE=1
+1. android           → virgl_test_server_android      (native GLES)
+2. angle-vulkan-null → virgl + ANGLE passthrough       (Vulkan GPUs)
+3. CPU fallback      → LIBGL_ALWAYS_SOFTWARE=1
 ```
 
 | Mode | Env | Performance |
@@ -242,7 +237,7 @@ Termux binaries (`/data/data/com.termux/files/usr/bin/...`) are bind-mounted int
 - Termux: bionic libc (Android NDK)
 - Proot: glibc (Debian)
 
-The container PATH correctly points to `/usr/bin/` (proot-native). See `docs/plan-ai-stack.md` §8 for details.
+The container PATH correctly points to `/usr/bin/` (proot-native). This is the exact class of bug that eats hours in a manual proot setup — see `docs/plan-ai-stack.md` §8 for the full explanation.
 
 ### Protection Layers
 
@@ -252,6 +247,8 @@ The container PATH correctly points to `/usr/bin/` (proot-native). See `docs/pla
 | **2. Runtime audit** | `arinanox doctor` checks every binary + PATH — warns if Termux found | `~/.arinanox/scripts/doctor.sh` |
 | **3. PROOT_NO_SECCOMP** | Fix fork/futex/libuv for Node.js tools (Pi, ddg_search, playwright) | `~/.shortcuts/1-start-arinanox.sh` |
 | **4. Documentation** | Bind-mount explanation + how to audit | `README.md`, `docs/plan-ai-stack.md` §8 |
+
+These four layers are also what's behind the "warnings suppressed" claim in the sections above — they're not silenced blindly, they're intercepted at a known cause.
 
 Check status anytime:
 ```bash
@@ -264,23 +261,22 @@ bash ~/.arinanox/scripts/doctor.sh
 
 | Limitation | Workaround |
 |-----------|------------|
-| No root | proot provides root-like environment |
+| No root | proot provides root-like environment, not real root |
 | No systemd | Start services manually; power-manager removed |
-| No GPU | virglrenderer auto-detected (3-tier: android → angle → CPU) |
-| ARM64 only | QEMU user-mode for cross-arch |
-| No native X11 | Termux:X11 app |
+| No GPU passthrough | virglrenderer auto-detected (3-tier: android → angle → CPU) |
+| ARM64 only | QEMU user-mode for cross-arch, with a performance cost |
+| No native X11 | Termux:X11 app required |
 | Storage restrictions | `termux-setup-storage` |
-
-All warnings (systemd proxy, system bus, DPMS, GL renderer) are suppressed at the declarative layer — arinanoX runs clean out of the box.
-
-**Cannot do:** Docker containers, systemd services, x86 natively.
+| **Cannot do** | Docker containers (daemon needs kernel features proot doesn't have), systemd services, x86 natively |
 
 ---
 
 ## 🛑 Android 12+ Phantom Process Killer
 
+Background processes (including your desktop session) can get silently killed by Android's process limiter. Disable it:
+
 - **Android 14+:** Developer Options → Disable child process restrictions
-- **Android 12-13:** `adb shell settings put global settings_enable_monitor_phantom_procs false`
+- **Android 12–13:** `adb shell settings put global settings_enable_monitor_phantom_procs false`
 
 ---
 
@@ -293,18 +289,14 @@ arinanoX/
 │   ├── Dockerfile        ←    declarative: packages, configs, themes
 │   └── configs-target/    ←    XFCE, bash, GTK, autostart
 ├── scripts/              ← setup, patch, rollback, status
-├── launchers/            ← start/stop shortcuts
-├── docs/                 ← documentation
-└── .github/workflows/    ← CI → GHCR image on push
+├── launchers/             ← start/stop shortcuts
+├── docs/                  ← documentation
+└── .github/workflows/     ← CI → GHCR image on push
 ```
 
 ---
 
-## 📜 License
-
-GPLv3 — see [LICENSE](LICENSE).
-
---- on Touchscreen
+## 🖱️ Right-Click on Touchscreen
 
 `Ctrl+Alt+R` triggers right-click via xdotool (auto-installed).
 
@@ -317,3 +309,9 @@ extra-keys = [ \
 ```
 
 Run `termux-reload-settings` after saving.
+
+---
+
+## 📜 License
+
+GPLv3 — see [LICENSE](LICENSE).
