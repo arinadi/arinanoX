@@ -64,4 +64,17 @@ RUN chown -R admin:admin /home/admin && \
 
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
+# ═══════════════════════════════════════════════
+# Layer 5  AI VIBECODING STACK (Pi, lean-ctx, ddg_search, playwright)
+# Dipasang sebagai user admin, bukan root
+# ═══════════════════════════════════════════════
+COPY configs/ai-stack /home/admin/.arinanox/ai-stack/
+
+RUN chown -R admin:admin /home/admin/.arinanox/ai-stack && \
+    chmod +x /home/admin/.arinanox/ai-stack/*.sh
+
+# Catatan: beberapa tool perlu runtime setup (playwright install-browser, lean-ctx init)
+# Jalankan setelah container pertama kali login:
+#   bash ~/.arinanox/ai-stack/setup-ai-stack.sh
+
 CMD ["/bin/bash"]

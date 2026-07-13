@@ -192,6 +192,65 @@ arinanox install  # Apply packages from manifest
 
 ---
 
+## 🤖 AI VibeCoding Stack
+
+arinanoX can serve as a **portable AI coding workstation** — all agent tools run natively inside proot (not via Termux bind-mount).
+
+| Tool | Function | Install |
+|------|----------|---------|
+| [Pi](https://github.com/earendil-works/pi-coding-agent) | Agent orchestration (loop, tool-calling, LLM API) | `npm install -g @earendil-works/pi-coding-agent` |
+| [lean-ctx](https://github.com/yvgude/lean-ctx) | Context compression (shell output, file read, session memory) | Binary musl ARM64 from GH releases |
+| [ddg_search](https://github.com/oevortex/ddg_search) | Web search via AI (IAsk) + DuckDuckGo CLI | `npm install -g @oevortex/ddg_search` |
+| [playwright-cli](https://playwright.dev/agent-cli/) | Browser automation (Playwright Firefox) | `npm install -g @playwright/cli` + `playwright-cli install-browser firefox` |
+| DeepSeek API | Model provider (V4 Chat, 1M context) | Config `~/.pi/agent/models.json` |
+
+### Auto install
+
+After logging into proot, run:
+
+```bash
+bash ~/.arinanox/ai-stack/setup-ai-stack.sh
+```
+
+Or follow the manual steps in `docs/plan-ai-stack.md`.
+
+### Important: PROOT_NO_SECCOMP=1
+
+Node.js tools (Pi, ddg_search, playwright) require `export PROOT_NO_SECCOMP=1` before `proot-distro login` to work around known proot bugs:
+- `uv__io_poll: EINTR` (libuv crash)
+- `fork: Function not implemented` (seccomp blocks clone/fork)
+- `futex` error (V8/libuv thread sync)
+
+Already applied automatically in `~/.shortcuts/1-start-arinanox.sh`.
+
+### Note: Termux Bind-Mount
+
+Termux binaries (`/data/data/com.termux/files/usr/bin/...`) are bind-mounted into the proot container, but **cannot be executed** due to different linker/libc:
+- Termux: bionic libc (Android NDK)
+- Proot: glibc (Debian)
+
+The container PATH correctly points to `/usr/bin/` (proot-native). See `docs/plan-ai-stack.md` §8 for details.
+
+### Preventive Measures
+
+arinanoX applies multiple layers to prevent Termux binary shadowing:
+
+| Layer | Mechanism | Location |
+|---|---|---|
+| **1. PATH hardening** | `.bashrc` sets clean PATH + guard strips Termux paths at end of init | `~/.bashrc`, `image/configs-target/home/admin/.bashrc` |
+| **2. Runtime audit** | `arinanox doctor` checks every binary + PATH — warns if Termux found | `~/.arinanox/scripts/doctor.sh` |
+| **3. PROOT_NO_SECCOMP** | Fix fork/futex/libuv for Node.js tools | `~/.shortcuts/1-start-arinanox.sh` |
+| **4. Documentation** | Bind-mount explanation + how to audit | `README.md`, `docs/plan-ai-stack.md` §8 |
+
+Check status anytime:
+```bash
+bash ~/.arinanox/scripts/doctor.sh
+# or just binary audit:
+bash ~/.arinanox/scripts/doctor.sh 2>/dev/null | grep -E "Binary|PATH"
+```
+
+---
+
 ## 📋 Termux:API (inside proot)
 
 | Command | Action |
