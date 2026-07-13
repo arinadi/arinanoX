@@ -218,11 +218,8 @@ All tools are **pre-installed** in the arinanoX image — no setup needed after 
 | **MCP config** | ✅ `~/.pi/agent/mcp.json` |
 | **Firefox user.js** | 📦 Copy manually after first Firefox run (see below) |
 
-> **Note:** Firefox user.js can't be pre-deployed because the Firefox profile is created on first launch.
-> After first Firefox run, copy it:
-> ```bash
-> cp ~/.arinanox/ai-stack/user.js ~/.mozilla/firefox/*.default-esr/
-> ```
+> **Note:** Firefox user.js is **pre-deployed** in the image. Firefox is started briefly during
+> build to create the profile, so `user.js` is ready on first launch. No manual copy needed.
 
 For first-time setup (run once after login):
 ```bash

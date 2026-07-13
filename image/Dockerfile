@@ -92,8 +92,20 @@ RUN sudo -u admin /usr/local/bin/lean-ctx init --global 2>/dev/null || true && \
 
 # ── Setup config files for admin ───────────────────────────
 COPY configs/ai-stack /home/admin/.arinanox/ai-stack/
-RUN mkdir -p /home/admin/.pi/agent && \
-    cp /home/admin/.arinanox/ai-stack/user.js /home/admin/.arinanox/ai-stack/ 2>/dev/null || true
+
+# Generate Firefox profile by running briefly headless, then deploy user.js
+RUN sudo -u admin MOZ_HEADLESS=1 firefox --headless --first-startup & \
+    FF_PID=$! && \
+    sleep 8 && \
+    kill $FF_PID 2>/dev/null; \
+    sleep 1 && \
+    FF_DIR=$(ls -d /home/admin/.mozilla/firefox/*.default-esr 2>/dev/null || echo "") && \
+    if [ -n "$FF_DIR" ] && [ -d "$FF_DIR" ]; then \
+        cp /home/admin/.arinanox/ai-stack/user.js "$FF_DIR/user.js" && \
+        echo "user.js deployed to $FF_DIR"; \
+    else \
+        echo "Firefox profile not created — user.js will be deployed on first run"; \
+    fi
 
 # DeepSeek models.json
 RUN echo '{
